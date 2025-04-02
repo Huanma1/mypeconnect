@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->int('products_id');
+            $table->integer('products_id');
+            $table->string('phone_number');
             $table->integer('mype_rate');
             $table->string('mype_address');
             $table->string('mype_description');
