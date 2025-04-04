@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('product_name');
             $table->string('product_description');
             $table->integer('product_price');
-            $table->integer('stock');
             $table->string('category');
             $table->integer('product_rate');   
         });
