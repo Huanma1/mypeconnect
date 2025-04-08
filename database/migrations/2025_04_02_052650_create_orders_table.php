@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->integer('total_price');
             $table->foreignId('mype_id')->constrained()->onDelete('restrict');
-            $table->foreignId('users_id')->constrained()->onDelete('restrict');
+            $table->foreignId('user_id')->constrained()->onDelete('restrict');
             $table->string('state');
             $table->string('order_payment');
             $table->integer('product_quantity');

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('mype_id')->constrained()->onDelete('restrict');
-            $table->foreignId('products_id')->constrained()->onDelete('restrict');
+            $table->foreignId('product_id')->constrained()->onDelete('restrict');
             $table->integer('stock')->default(0);
         });
         

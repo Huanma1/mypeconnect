@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('product_name');
-            $table->string('product_description');
+            $table->text('product_description');
             $table->integer('product_price');
             $table->string('category');
-            $table->integer('product_rate');   
+            $table->integer('product_rate')->default(0);
+            // Se pone default 0 para que no haya problemas de null
         });
     }
 
