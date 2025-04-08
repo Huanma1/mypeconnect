@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('product_description');
             $table->integer('product_price');
             $table->string('category');
-            $table->integer('product_rate')->default(0);
+            $table->decimal('product_rate')->default(0);
             // Se pone default 0 para que no haya problemas de null
         });
     }
