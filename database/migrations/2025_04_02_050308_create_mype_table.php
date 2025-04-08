@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('mype_address');
             $table->string('mype_description');
             $table->rememberToken();
-            $table->timestamps();
+          
             
         });
     }
