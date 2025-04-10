@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mype', function (Blueprint $table) {
+        Schema::create('mypes', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->integer('products_id');
             $table->string('phone_number');
             $table->integer('mype_rate');
             $table->string('mype_address');
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mype');
+        Schema::dropIfExists('mypes');
     }
 };

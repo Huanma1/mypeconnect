@@ -6,10 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    public function products() {
-        return $this->belongsToMany(Store::class, 'store_products')
-                    ->withPivot('stock')
+    // Campos que se pueden asignar masivamente 
+    protected $fillable = [
+        'product_name',
+        'product_description',
+        'product_price',
+        'category',
+        'rating',
+    ];
+
+    /**
+     * Relación muchos a muchos con Mypes.
+     */
+    public function mypes()
+    {
+        return $this->belongsToMany(Mype::class, 'mype_products')
+                    ->withPivot('custom_price', 'stock') // Incluye los campos adicionales de la tabla pivote
                     ->withTimestamps();
-    
     }
 }
