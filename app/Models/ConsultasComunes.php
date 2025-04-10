@@ -1,6 +1,9 @@
 <?php
 
 /**
+ * Para corrar esto tienes que ir al cmd y poner lo siguiente:
+ * php artisan tinker
+ * 
  * Asociar un producto a una Mype con información adicional.
  *
     *$mype = Mype::find(1); // Encuentra la Mype
