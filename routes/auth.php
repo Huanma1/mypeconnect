@@ -71,4 +71,5 @@ Route::middleware(['auth:mype'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard'); // Cambia 'Dashboard' por tu vista personalizada
     })->name('dashboard');
+    Route::post('mype/logout', [AuthenticatedSessionController::class, 'destroy'])->name('mype.logout');
 });

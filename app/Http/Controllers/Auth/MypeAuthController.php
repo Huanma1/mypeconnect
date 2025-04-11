@@ -13,6 +13,10 @@ class MypeAuthController extends Controller
     {
         return view('mypes.register');
     }
+    public function showLoginForm()
+    {
+        return view('mypes.login');
+    }
 
     public function register(Request $request)
     {
