@@ -18,10 +18,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('phone_number');
-            $table->integer('mype_rate');
-            $table->string('mype_address');
-            $table->string('mype_description');
+            $table->string('phone_number')->nullable();
+            $table->integer('mype_rate')->nullable();
+            $table->string('mype_address')->nullable();
+            $table->string('mype_description')->nullable();
             $table->rememberToken();
             
         });

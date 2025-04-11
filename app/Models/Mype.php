@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable; // Cambiar de Model a Authenticatable
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Mype extends Model
+class Mype extends Authenticatable // Cambiar de Model a Authenticatable
 {
+    use HasFactory, Notifiable;
 
     // Campos que se pueden asignar masivamente 
     protected $fillable = [ 
@@ -18,6 +21,11 @@ class Mype extends Model
         'mype_description',
     ];
 
+    protected $hidden = [
+        'password', // Oculta la contraseña al serializar el modelo
+        'remember_token',
+    ];
+
     /**
      * Relación muchos a muchos con productos.
      */
@@ -27,5 +35,4 @@ class Mype extends Model
                     ->withPivot('custom_price', 'stock') // Incluye los campos adicionales de la tabla pivote
                     ->withTimestamps();
     }
-    
 }

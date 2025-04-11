@@ -8,7 +8,9 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\MypeAuthController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -53,4 +55,20 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+});
+
+// Rutas para Mypes no autenticadas
+Route::middleware('guest:mype')->group(function () {
+    Route::get('mype/register', [MypeAuthController::class, 'showRegisterForm'])->name('mype.register');
+    Route::post('mype/register', [MypeAuthController::class, 'register'])->name('mype.register.submit');
+
+    Route::get('mype/login', [MypeAuthController::class, 'showLoginForm'])->name('mype.login');
+    Route::post('mype/login', [MypeAuthController::class, 'login'])->name('mype.login.submit');
+});
+
+// Rutas para Mypes autenticadas
+Route::middleware(['auth:mype'])->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard'); // Cambia 'Dashboard' por tu vista personalizada
+    })->name('dashboard');
 });
