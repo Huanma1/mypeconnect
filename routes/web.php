@@ -15,8 +15,6 @@ Route::middleware(['auth:mype', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
-
-
 Route::get('/mypes/register', [MypeController::class, 'create'])->name('mypes.register');
 Route::post('/mypes/register', [MypeController::class, 'store'])->name('mypes.store');
 
