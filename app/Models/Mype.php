@@ -10,6 +10,8 @@ class Mype extends Authenticatable // Cambiar de Model a Authenticatable
 {
     use HasFactory, Notifiable;
 
+    protected $table = 'mypes'; 
+
     // Campos que se pueden asignar masivamente 
     protected $fillable = [ 
         'name',

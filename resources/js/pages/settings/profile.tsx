@@ -22,14 +22,22 @@ const breadcrumbs: BreadcrumbItem[] = [
 type ProfileForm = {
     name: string;
     email: string;
+    phone_number?: string;
+    mype_address?: string;
+    mype_description?: string;
+
 }
 
 export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
     const { auth } = usePage<SharedData>().props;
 
+    // @ts-ignore
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
-        name: auth.user.name,
-        email: auth.user.email,
+        name: auth.user.name ,
+        email: auth.user.email ,
+        phone_number: auth.user.phone_number || '',
+        mype_address: auth.user.mype_address || '',
+        mype_description: auth.user.mype_description || '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -81,6 +89,45 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
                             <InputError className="mt-2" message={errors.email} />
                         </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="phone_number">Phone Number</Label>
+                            <Input
+                                id="phone_number"
+                                type="text"
+                                className="mt-1 block w-full"
+                                value={data.phone_number}
+                                onChange={(e) => setData('phone_number', e.target.value)}
+                                placeholder="Phone number"
+                            />
+                            <InputError className="mt-2" message={errors.phone_number} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="mype_address">Address</Label>
+                            <Input
+                                id="mype_address"
+                                type="text"
+                                className="mt-1 block w-full"
+                                value={data.mype_address}
+                                onChange={(e) => setData('mype_address', e.target.value)}
+                                placeholder="Address"
+                            />
+                            <InputError className="mt-2" message={errors.mype_address} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="mype_description">Description</Label>
+                            <textarea
+                                id="mype_description"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                value={data.mype_description}
+                                onChange={(e) => setData('mype_description', e.target.value)}
+                                placeholder="Description of your Mype"
+                            />
+                            <InputError className="mt-2" message={errors.mype_description} />
+                        </div>
+
 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
                             <div>
