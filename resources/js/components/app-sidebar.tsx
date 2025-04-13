@@ -13,6 +13,11 @@ const mainNavItems: NavItem[] = [
         href: '/dashboard',
         icon: LayoutGrid,
     },
+    {
+        title: 'Agregar Producto',
+        href: '/products/create',
+        icon: LayoutGrid,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
