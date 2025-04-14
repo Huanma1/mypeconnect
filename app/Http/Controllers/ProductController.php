@@ -15,7 +15,7 @@ class ProductController extends Controller
     }
 
     public function mype(Request $request)
-{
+    {
     // Validar los datos del formulario
     $request->validate([
         'product_name' => 'required|string|max:255',
@@ -47,5 +47,24 @@ class ProductController extends Controller
 
     // Redirigir con un mensaje de éxito
     return redirect()->route('products.create')->with('success', 'Producto creado exitosamente.');
-}
+    }
+
+    public function index(){
+
+        $product = Product::with('mypes')->paginate(12);
+
+        return view('products.index', [
+            'products' => $product,
+        ]);
+    }
+
+    public function show($id)
+    {
+        $product = Product::with('mypes')->findOrFail($id);
+
+        return view('products.show', [
+            'product' => $product,
+            'mypes' => $product->mypes,
+        ]);
+    }
 }
