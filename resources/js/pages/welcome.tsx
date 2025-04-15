@@ -1,6 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Product, Paginated } from '@/types';
-import ProductList from '@/components/ProductList';
+import ProductList from '@/pages/ProductList';
 
 export default function Welcome() {
     const { auth, products } = usePage<{ auth: any; products: Paginated<Product> }>().props;

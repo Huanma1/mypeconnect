@@ -61,10 +61,8 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::with('mypes')->findOrFail($id);
-
-        return view('products.show', [
+        return Inertia::render('DetalleProducto', [
             'product' => $product,
-            'mypes' => $product->mypes,
         ]);
     }
 }

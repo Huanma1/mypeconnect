@@ -45,9 +45,14 @@ export interface Product {
     id: number;
     product_name: string;
     product_description: string;
+    category: string; // Asegúrate de que 'category' esté presente
+    ratinf: string;
     mypes: {
+        id: number;
+        name: string;
         pivot: {
             custom_price: number;
+            stock: number;
         };
     }[];
 }

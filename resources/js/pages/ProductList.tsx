@@ -1,15 +1,12 @@
-// resources/js/Pages/ProductList.tsx
-
-import { Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react'; // Asegúrate de importar el Link
 import { Product, Paginated } from '@/types';
 
 interface Props {
-    products: Paginated<Product> | undefined; // Permitir que products sea undefined
+    products: Paginated<Product> | undefined; // Asegúrate de que products sea del tipo Paginated<Product> o undefined
 }
 
 export default function ProductList({ products }: Props) {
-    console.log("Products:", products); // Verifica los datos
-
+    // Verifica si los productos están cargados
     if (!products) {
         return <div>Cargando productos...</div>; // Mostrar un mensaje mientras los datos se cargan
     }
@@ -20,19 +17,17 @@ export default function ProductList({ products }: Props) {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {products.data.length > 0 ? (
                     products.data.map((product) => (
-                        <div key={product.id} className="bg-white p-4 rounded shadow">
+                        <Link
+                            key={product.id}
+                            href={`/products/${product.id}`}
+                            className="bg-white p-4 rounded shadow hover:shadow-lg transition-all"
+                        >
                             <h2 className="text-lg font-semibold">{product.product_name}</h2>
                             <p className="text-gray-600">{product.product_description}</p>
                             <p className="text-green-500 font-bold">
                                 Desde: ${product.mypes[0]?.pivot?.custom_price || 'N/A'}
                             </p>
-                            <Link
-                                href={`/products/${product.id}`}
-                                className="text-blue-500 hover:underline mt-2 block"
-                            >
-                                Ver Detalles
-                            </Link>
-                        </div>
+                        </Link>
                     ))
                 ) : (
                     <p>No hay productos disponibles.</p>

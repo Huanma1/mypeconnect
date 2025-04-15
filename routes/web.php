@@ -17,13 +17,11 @@ Route::middleware(['auth:mype', 'verified'])->group(function () {
 Route::get('/mypes/register', [MypeController::class, 'create'])->name('mypes.register');
 Route::post('/mypes/register', [MypeController::class, 'store'])->name('mypes.store');
 
-
-// Ruta para mostrar el formulario
+// Rutas de productos
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
 Route::post('/products', [ProductController::class, 'mype'])->name('products.mype');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
-
