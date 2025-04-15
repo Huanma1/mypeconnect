@@ -40,3 +40,25 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Product {
+    id: number;
+    product_name: string;
+    product_description: string;
+    mypes: {
+        pivot: {
+            custom_price: number;
+        };
+    }[];
+}
+
+export interface PaginationLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
+export interface Paginated<T> {
+    data: T[];
+    links: PaginationLink[];
+}

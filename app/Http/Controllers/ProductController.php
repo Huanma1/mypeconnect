@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Mype;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class ProductController extends Controller
 {
@@ -51,10 +52,9 @@ class ProductController extends Controller
 
     public function index(){
 
-        $product = Product::with('mypes')->paginate(12);
-
-        return view('products.index', [
-            'products' => $product,
+        $products = Product::with('mypes')->paginate(10); // Asegúrate de que los productos estén siendo consultados correctamente
+        return Inertia::render('ProductList', [
+            'products' => $products,
         ]);
     }
 
