@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->onDelete('restrict');
             $table->integer('custom_price')->nullable();//Este campo es para el precio personalizado de cada mype
             $table->integer('stock')->default(0);
+            $table->decimal('product_rate')->default(0);
         });
         
     }

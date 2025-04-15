@@ -22,7 +22,7 @@ class Product extends Model
     public function mypes()
     {
         return $this->belongsToMany(Mype::class, 'mype_products')
-                    ->withPivot('custom_price', 'stock') // Incluye los campos adicionales de la tabla pivote
+                    ->withPivot('custom_price', 'stock', 'product_rate') // Incluye los campos adicionales de la tabla pivote
                     ->withTimestamps();
     }
 }

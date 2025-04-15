@@ -14,11 +14,9 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('product_name');
+            $table->string('product_name')->unique();
             $table->text('product_description');
             $table->string('category');
-            $table->decimal('product_rate')->default(0);
-            // Se pone default 0 para que no haya problemas de null
         });
     }
 

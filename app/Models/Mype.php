@@ -34,7 +34,7 @@ class Mype extends Authenticatable // Cambiar de Model a Authenticatable
     public function products()
     {
         return $this->belongsToMany(Product::class, 'mype_products')
-                    ->withPivot('custom_price', 'stock') // Incluye los campos adicionales de la tabla pivote
+                    ->withPivot('custom_price', 'stock' , 'product_rate') // Incluye los campos adicionales de la tabla pivote
                     ->withTimestamps();
     }
 }
