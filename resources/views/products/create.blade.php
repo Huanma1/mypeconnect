@@ -1,4 +1,3 @@
-<!-- filepath: resources/views/products/create.blade.php -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,25 +15,39 @@
             </div>
         @endif
 
+        <!-- Mostrar mensajes de error -->
+        @if ($errors->any())
+            <div class="bg-red-100 text-red-800 p-4 rounded mb-4">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <!-- Formulario para agregar un producto -->
         <form action="{{ route('products.mype') }}" method="POST">
             @csrf
             <label for="product_name">Nombre del Producto:</label>
-            <input type="text" name="product_name" id="product_name" required><br>
-        
+            <input type="text" name="product_name" id="product_name" value="{{ old('product_name') }}" required><br>
+
             <label for="product_description">Descripción:</label>
-            <textarea name="product_description" id="product_description" required></textarea><br>
-        
+            <textarea name="product_description" id="product_description" required>{{ old('product_description') }}</textarea><br>
+
+
             <label for="category">Categoría:</label>
-            <input type="text" name="category" id="category" required><br>
-        
+            <input type="text" name="category" id="category" value="{{ old('category') }}" required><br>
+
+
             <label for="custom_price">Precio Personalizado:</label>
-            <input type="number" name="custom_price" id="custom_price"><br>
-        
+            <input type="number" name="custom_price" id="custom_price" value="{{ old('custom_price') }}"><br>
+
+
             <label for="stock">Stock:</label>
-            <input type="number" name="stock" id="stock" min="0"><br>
-        
-            <button type="submit">Crear Producto</button>
+            <input type="number" name="stock" id="stock" min="0" value="{{ old('stock') }}"><br>
+
+            <button type="submit" class="mt-4 bg-blue-500 text-white p-2 rounded">Crear Producto</button>
         </form>
     </div>
 </body>

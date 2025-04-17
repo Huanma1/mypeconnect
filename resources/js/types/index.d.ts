@@ -53,6 +53,7 @@ export interface Product {
         pivot: {
             custom_price: number;
             stock: number;
+            product_rate: number;
         };
     }[];
 }

@@ -1,51 +1,128 @@
-import { Link } from '@inertiajs/react'; // Asegúrate de importar el Link
+import { Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 import { Product, Paginated } from '@/types';
+import MainLayout from '@/components/MainLayout'; // Cambiado a MainLayout
 
 interface Props {
-    products: Paginated<Product> | undefined; // Asegúrate de que products sea del tipo Paginated<Product> o undefined
+    products: Paginated<Product>;
+    filters: {
+        category?: string;
+        min_price?: string;
+        max_price?: string;
+    };
+    categories: string[];
 }
 
-export default function ProductList({ products }: Props) {
-    // Verifica si los productos están cargados
-    if (!products) {
-        return <div>Cargando productos...</div>; // Mostrar un mensaje mientras los datos se cargan
-    }
+export default function ProductList({ products, filters, categories }: Props) {
+    const [category, setCategory] = useState(filters?.category || '');
+    const [minPrice, setMinPrice] = useState(filters?.min_price || '');
+    const [maxPrice, setMaxPrice] = useState(filters?.max_price || '');
+
+    const handleFilter = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault(); // Prevenir el comportamiento predeterminado del botón
+
+        router.get('/products', {
+            category,
+            min_price: minPrice,
+            max_price: maxPrice,
+        }, {
+            preserveState: true, // Mantiene el estado actual
+            preserveScroll: true, // Mantiene la posición de desplazamiento
+        });
+    };
+
+    const clearFilters = () => {
+        // Restablece los valores de los filtros
+        setCategory('');
+        setMinPrice('');
+        setMaxPrice('');
+
+        // Navega a la ruta sin filtros
+        router.get('/products', {}, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    };
 
     return (
-        <div className="py-8">
-            <h1 className="text-3xl font-bold mb-6">Productos Disponibles</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {products.data.length > 0 ? (
-                    products.data.map((product) => (
-                        <Link
-                            key={product.id}
-                            href={`/products/${product.id}`}
-                            className="bg-white p-4 rounded shadow hover:shadow-lg transition-all"
-                        >
-                            <h2 className="text-lg font-semibold">{product.product_name}</h2>
-                            <p className="text-gray-600">{product.product_description}</p>
-                            <p className="text-green-500 font-bold">
-                                Desde: ${product.mypes[0]?.pivot?.custom_price || 'N/A'}
-                            </p>
-                        </Link>
-                    ))
-                ) : (
-                    <p>No hay productos disponibles.</p>
-                )}
-            </div>
-            <div className="mt-6 flex justify-center">
-                {products.links.map((link, index) => (
-                    <a
-                        key={index}
-                        href={link.url || '#'}
-                        className={`px-4 py-2 border ${
-                            link.active ? 'bg-blue-500 text-white' : 'text-gray-700'
-                        }`}
+        <MainLayout> {/* Cambiado a MainLayout */}
+            <div className="py-8">
+                <h1 className="text-3xl font-bold mb-6">Productos Disponibles</h1>
+
+                {/* Filtros */}
+                <div className="mb-8 grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                    {/* Categoría */}
+                    <select
+                        value={category}
+                        onChange={e => setCategory(e.target.value)}
+                        className="p-2 border rounded w-full"
                     >
-                        {link.label}
-                    </a>
-                ))}
+                        <option value="">Todas las categorías</option>
+                        {categories?.map((cat) => (
+                            <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                    </select>
+
+                    {/* Precio mínimo */}
+                    <input
+                        type="number"
+                        placeholder="Precio mínimo"
+                        value={minPrice}
+                        onChange={e => setMinPrice(e.target.value)}
+                        className="p-2 border rounded w-full"
+                    />
+
+                    {/* Precio máximo */}
+                    <input
+                        type="number"
+                        placeholder="Precio máximo"
+                        value={maxPrice}
+                        onChange={e => setMaxPrice(e.target.value)}
+                        className="p-2 border rounded w-full"
+                    />
+
+                    {/* Botón Aplicar */}
+                    <button
+                        type="button"
+                        onClick={handleFilter}
+                        className="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600 transition w-full"
+                    >
+                        Aplicar
+                    </button>
+
+                    {/* Botón Quitar */}
+                    <button
+                        onClick={clearFilters}
+                        className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 transition w-full"
+                    >
+                        Quitar
+                    </button>
+                </div>
+
+                {/* Lista de productos */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {products?.data?.length > 0 ? (
+                        products.data.map((product) => (
+                            <Link
+                                key={product.id}
+                                href={`/products/${product.id}`} // Ruta al detalle del producto
+                                className="bg-white p-4 rounded shadow hover:shadow-lg transition-all"
+                            >
+                                <h2 className="text-lg font-semibold">{product.product_name}</h2>
+                                <p className="text-gray-600">{product.product_description}</p>
+                                <p className="text-green-500 font-bold">
+                                    Desde: ${product.mypes.length > 0 ? product.mypes[0]?.pivot?.custom_price : 'N/A'}
+                                </p>
+                                <p className="text-yellow-500">
+                                    Calificación: {product.mypes.length > 0 ? product.mypes[0]?.pivot?.product_rate : 'N/A'}
+                                </p>
+                            </Link>
+                        ))
+                    ) : (
+                        <p>No hay productos disponibles.</p>
+                    )}
+                </div>
             </div>
-        </div>
+        </MainLayout>
     );
 }
