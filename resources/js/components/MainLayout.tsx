@@ -1,6 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 import React from 'react';
 
+
 interface Props {
     children: React.ReactNode;
 }
@@ -13,7 +14,10 @@ export default function MainLayout({ children }: Props) {
             {/* Encabezado */}
             <header className="p-4 bg-gray-900 text-white">
                 <div className="flex justify-between items-center max-w-7xl mx-auto">
-                    <h1 className="text-xl font-bold">Mype Connect</h1>
+                    <Link href={route('home')} className="text-white hover:underline">
+                        <h1 className="text-xl font-bold">Mype Connect</h1>
+                    </Link>
+                    
                     <nav className="space-x-4">
                         {auth?.user ? (
                             <Link href={route('dashboard')} className="text-white hover:underline">
