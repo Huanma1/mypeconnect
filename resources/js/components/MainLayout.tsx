@@ -1,14 +1,8 @@
 import { Link, usePage } from '@inertiajs/react';
 import React from 'react';
 
-
-interface Props {
-    children: React.ReactNode;
-}
-
 export default function MainLayout({ children }: { children: React.ReactNode }) {
-    const { auth } = usePage<{ auth: { user: any } }>().props;
-    console.log('Estado de autenticación:', auth);
+    const { auth } = usePage<{ auth: { user: any | null } }>().props;
 
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">
