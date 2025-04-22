@@ -1,6 +1,6 @@
 import { Product } from '@/types';
 import { Link } from '@inertiajs/react';
-import Layout from '@/components/MainLayout'; // Importa el Layout
+import Layout from '@/components/MainLayout'; 
 
 interface Props {
     product: Product;
@@ -46,7 +46,7 @@ export default function DetalleProducto({ product }: Props) {
                 {/* Botón de volver a inicio */}
                 <div className="mt-6">
                     <Link
-                        href="/products"
+                        href={route('home')}
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                     >
                         Volver a Inicio

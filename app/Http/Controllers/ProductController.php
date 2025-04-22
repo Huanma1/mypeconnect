@@ -78,45 +78,53 @@ class ProductController extends Controller
     }
 
     public function index(Request $request)
-    {
-        $query = Product::with(['mypes' => function ($q) {
-            $q->orderBy('custom_price');
-        }]);
+{
+    $user = $request->user(); // Puede ser null si el usuario no está autenticado
 
-        // Filtro por categoría
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
-        }
+    $query = Product::with(['mypes' => function ($q) {
+        $q->orderBy('custom_price');
+    }]);
 
-        // Filtro por rango de precios
-        if ($request->filled('min_price') || $request->filled('max_price')) {
-            $query->whereHas('mypes', function ($q) use ($request) {
-                if ($request->filled('min_price')) {
-                    $q->where('custom_price', '>=', $request->min_price);
-                }
-                if ($request->filled('max_price')) {
-                    $q->where('custom_price', '<=', $request->max_price);
-                }
-            });
-        }
-
-        $products = $query->paginate(8)->withQueryString();
-        $categories = Product::select('category')->distinct()->pluck('category')->toArray();
-
-        return Inertia::render('ProductList', [
-            'products' => $products,
-            'categories' => $categories,
-            'filters' => $request->only(['category', 'min_price', 'max_price']),
-        ]);
+    // Filtro por categoría
+    if ($request->filled('category')) {
+        $query->where('category', $request->category);
     }
 
+    // Filtro por rango de precios
+    if ($request->filled('min_price') || $request->filled('max_price')) {
+        $query->whereHas('mypes', function ($q) use ($request) {
+            if ($request->filled('min_price')) {
+                $q->where('custom_price', '>=', $request->min_price);
+            }
+            if ($request->filled('max_price')) {
+                $q->where('custom_price', '<=', $request->max_price);
+            }
+        });
+    }
+
+    $products = $query->paginate(8)->withQueryString();
+    $categories = Product::select('category')->distinct()->pluck('category')->toArray();
+
+    return Inertia::render('ProductList', [
+        'products' => $products,
+        'categories' => $categories,
+        'filters' => $request->only(['category', 'min_price', 'max_price']),
+        'auth' => $user, 
+    ]);
+}
+
      // Mostrar detalles de un producto
-     public function show($id)
-     {
-        $product = Product::with('mypes')->findOrFail($id);
+    public function show($id)
+    {
+        $product = Product::with('mypes')->find($id);
+
+        if (!$product) {
+            return redirect()->route('products.index')->with('error', 'Producto no encontrado.');
+        }
 
         return Inertia::render('DetalleProducto', [
             'product' => $product,
         ]);
-     }
+    }
+
 }

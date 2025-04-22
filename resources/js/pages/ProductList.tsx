@@ -19,15 +19,15 @@ export default function ProductList({ products, filters, categories }: Props) {
     const [maxPrice, setMaxPrice] = useState(filters?.max_price || '');
 
     const handleFilter = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault(); // Prevenir el comportamiento predeterminado del botón
-
+        e.preventDefault();
+    
         router.get('/products', {
             category,
             min_price: minPrice,
             max_price: maxPrice,
         }, {
-            preserveState: true, // Mantiene el estado actual
-            preserveScroll: true, // Mantiene la posición de desplazamiento
+            preserveState: false, // Forzar la recarga de los props compartidos
+            preserveScroll: true, // Mantener la posición de desplazamiento
         });
     };
 
@@ -39,7 +39,7 @@ export default function ProductList({ products, filters, categories }: Props) {
 
         // Navega a la ruta sin filtros
         router.get('/products', {}, {
-            preserveState: true,
+            preserveState: false,
             preserveScroll: true,
         });
     };
