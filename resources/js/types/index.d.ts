@@ -40,3 +40,31 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Product {
+    id: number;
+    product_name: string;
+    product_description: string;
+    category: string; // Asegúrate de que 'category' esté presente
+    ratinf: string;
+    mypes: {
+        id: number;
+        name: string;
+        pivot: {
+            custom_price: number;
+            stock: number;
+            product_rate: number;
+        };
+    }[];
+}
+
+export interface PaginationLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
+export interface Paginated<T> {
+    data: T[];
+    links: PaginationLink[];
+}

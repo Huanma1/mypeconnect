@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        
+        'mype' => [ // Guard para las Mypes
+            'driver' => 'session',
+            'provider' => 'mypes',
+        ],
     ],
 
     /*
@@ -62,7 +67,12 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\User::class,
+        ],
+
+        'mypes' => [ // Proveedor para las Mypes
+            'driver' => 'eloquent',
+            'model' => App\Models\Mype::class,
         ],
 
         // 'users' => [
@@ -97,6 +107,7 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+
     ],
 
     /*
@@ -112,4 +123,5 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+   
 ];
