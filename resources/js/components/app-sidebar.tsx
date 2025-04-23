@@ -18,6 +18,12 @@ const mainNavItems: NavItem[] = [
         href: '/products/create',
         icon: LayoutGrid,
     },
+    {
+        title: 'Modificar Stock',
+        href: '/dashboard/products',
+        icon: BookOpen,
+    },
+
 ];
 
 const footerNavItems: NavItem[] = [

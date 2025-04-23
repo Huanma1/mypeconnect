@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\MypeController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\StockController;
 
 // Página de inicio
 Route::get('/', [WelcomeController::class, 'showWelcome'])->name('home');
@@ -17,6 +18,11 @@ Route::middleware(['auth:mype'])->group(function () {
 
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'mype'])->name('products.mype');
+
+    Route::get('/dashboard/products', [ProductController::class, 'listProductsWithStock'])->name('dashboard.products.list');
+    Route::post('/dashboard/products/{productId}/update-stock-and-price', [StockController::class, 'updateStockAndPrice'])->name('dashboard.products.updateStockAndPrice');
+
+
 });
 
 // Rutas públicas (sin autenticación requerida)
