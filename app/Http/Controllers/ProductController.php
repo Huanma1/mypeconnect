@@ -136,7 +136,8 @@ class ProductController extends Controller
 
         // Obtener el término de búsqueda
         $search = $request->input('search');
-
+        
+        /** @var \App\Models\Mype $mype */
         // Obtener los productos asociados a la MYPE y aplicar el filtro de búsqueda
         $products = $mype->products()
             ->withPivot('stock', 'custom_price')

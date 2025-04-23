@@ -25,11 +25,9 @@ Route::middleware(['auth:mype'])->group(function () {
 
 });
 
-// Rutas públicas (sin autenticación requerida)
-Route::middleware(['web'])->group(function () {
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
-});
+
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
 // Rutas de registro
 Route::get('/mypes/register', [MypeController::class, 'create'])->name('mypes.register');
