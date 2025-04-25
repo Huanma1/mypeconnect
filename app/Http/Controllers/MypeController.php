@@ -2,21 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Mype;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\View\View;
 
 class MypeController extends Controller
 {
-    public function create()
+    /**
+     * Muestra el formulario de registro para un MYPE.
+     */
+    public function create(): View
     {
         return view('mypes.register');
     }
 
-    public function store(Request $request)
+    /**
+     * Almacena un nuevo MYPE en la base de datos.
+     */
+    public function store(Request $request): RedirectResponse
     {
-        
+        // Validación de los campos
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:mypes,email',
@@ -27,18 +35,34 @@ class MypeController extends Controller
             'mype_description' => 'nullable|string',
         ]);
 
-        $mype = Mype::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'phone_number' => $request->phone_number,
-            'mype_rate' => $request->mype_rate ?? 0,
-            'mype_address' => $request->mype_address,
-            'mype_description' => $request->mype_description,
-        ]);
+        try {
+            // Asegurarse de que la contraseña sea un string antes de pasársela a Hash::make()
+            $password = $request->password;
 
-        Auth::guard('mype')->login($mype);
-        return redirect()->route('dashboard')->with('success', 'Mype registrada correctamente.');
+            // Si la contraseña no es un string, convertirla
+            if (! is_string($password)) {
+                $password = strval($password);
+            }
+
+            // Crear el nuevo MYPE
+            $mype = Mype::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($password),  // Asegura que la contraseña sea un string
+                'phone_number' => $request->phone_number,
+                'mype_rate' => $request->mype_rate ?? 0, // Valor predeterminado si no se especifica
+                'mype_address' => $request->mype_address,
+                'mype_description' => $request->mype_description,
+            ]);
+
+            // Iniciar sesión para el MYPE recién creado
+            Auth::guard('mype')->login($mype);
+
+            // Redirigir a la página de dashboard con un mensaje de éxito
+            return redirect()->route('dashboard')->with('success', 'Mype registrada correctamente.');
+        } catch (\Exception $e) {
+            // Manejar excepciones, como errores de base de datos u otros problemas inesperados
+            return redirect()->route('mypes.register')->withErrors(['error' => 'Hubo un error al registrar la MYPE. Por favor, intenta de nuevo.']);
+        }
     }
 }
-

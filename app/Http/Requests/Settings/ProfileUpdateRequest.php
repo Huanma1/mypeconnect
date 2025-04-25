@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Settings;
 
-use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -16,16 +15,21 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $mype = $this->user();
+
+        // Verificar que el usuario autenticado sea una instancia de Mype
+        if (! $mype instanceof \App\Models\Mype) {
+            throw new \Exception('MYPE no autenticado o inválido.');
+        }
+
         return [
             'name' => ['required', 'string', 'max:255'],
-
             'email' => [
                 'required',
                 'string',
-                'lowercase',
                 'email',
                 'max:255',
-                Rule::unique('mypes', 'email')->ignore($this->user()->id),
+                Rule::unique('mypes', 'email')->ignore($mype->id), // Validar email único para MYPE
             ],
             'phone_number' => ['nullable', 'string', 'max:15'],
             'mype_address' => ['nullable', 'string', 'max:255'],

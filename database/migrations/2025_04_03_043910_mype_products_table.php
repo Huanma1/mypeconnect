@@ -16,11 +16,12 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('mype_id')->constrained()->onDelete('restrict');
             $table->foreignId('product_id')->constrained()->onDelete('restrict');
-            $table->integer('custom_price')->nullable();//Este campo es para el precio personalizado de cada mype
+            $table->integer('custom_price')->nullable(); // Este campo es para el precio personalizado de cada mype
             $table->integer('stock')->default(0);
             $table->decimal('product_rate')->default(0);
+            $table->integer('min_stock')->default(5)->after('stock');
         });
-        
+
     }
 
     /**

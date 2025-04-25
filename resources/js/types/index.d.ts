@@ -45,18 +45,20 @@ export interface Product {
     id: number;
     product_name: string;
     product_description: string;
-    category: string; // Asegúrate de que 'category' esté presente
-    ratinf: string;
+    category: string;
+    rating: string;
     mypes: {
-        id: number;
-        name: string;
-        pivot: {
-            custom_price: number;
-            stock: number;
-            product_rate: number;
-        };
+      id: number;
+      name: string;
+      pivot: {
+        custom_price: number;
+        stock: number;
+        product_rate: number;
+        min_stock: number;
+      };
     }[];
-}
+  }
+  
 
 export interface PaginationLink {
     url: string | null;

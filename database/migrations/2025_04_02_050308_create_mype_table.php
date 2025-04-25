@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('mype_address')->nullable();
             $table->string('mype_description')->nullable();
             $table->rememberToken();
-            
+
         });
     }
 

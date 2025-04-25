@@ -18,12 +18,23 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        // Verificar que el usuario esté autenticado
+        $user = $request->user();
+
+        // Si el usuario no está autenticado, devolvemos la vista con el error
+        if (! $user) {
+            return Inertia::render('auth/login', [
+                'error' => 'Debes estar autenticado para acceder a esta página.',
+            ]);
+        }
+
+        // Si está autenticado, proceder con la vista de perfil
         return Inertia::render('settings/profile', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
             'auth' => [
-                'user' => $request->user(),
-            ]
+                'user' => $user,
+            ],
         ]);
     }
 
@@ -32,13 +43,24 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Verificar que el usuario no sea null antes de continuar
+        if (! $user) {
+            return redirect()->route('login')->withErrors(['error' => 'Usuario no autenticado.']);
         }
 
-        $request->user()->save();
+        // Llenar los datos validados en el modelo usuario
+        $user->fill($request->validated());
+
+        // Verificar si el campo email ha cambiado
+        if ($user->isDirty('email')) {
+            // Si el email cambia, restablecemos la verificación de email
+            $user->email_verified_at = null;
+        }
+
+        // Guardar los cambios en el modelo usuario
+        $user->save();
 
         return to_route('profile.edit');
     }
@@ -54,8 +76,13 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
+        if (! $user) {
+            return redirect()->route('login')->withErrors(['error' => 'Usuario no autenticado.']);
+        }
+
         Auth::logout();
 
+        // Eliminar la cuenta del usuario
         $user->delete();
 
         $request->session()->invalidate();

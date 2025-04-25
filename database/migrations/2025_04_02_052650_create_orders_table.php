@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('state');
             $table->string('order_payment');
             $table->integer('product_quantity');
-            
+
         });
     }
 

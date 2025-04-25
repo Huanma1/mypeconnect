@@ -1,0 +1,20 @@
+includes:
+    - vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    level: max
+    paths:
+        - app
+
+    # Ignorar errores relacionados con las relaciones de Eloquent y sus tipos genéricos
+    ignoreErrors:
+        - '#Method App\\Models\\MypeProduct::mype\\(\\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo<App\\Models\\Mype, App\\Models\\MypeProduct> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsTo<App\\Models\\Mype, \$this\(App\\Models\\MypeProduct\)>#'
+        - '#Method App\\Models\\MypeProduct::product\\(\\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo<App\\Models\\Product, App\\Models\\MypeProduct> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsTo<App\\Models\\Product, \$this\(App\\Models\\MypeProduct\)>#'
+        - '#Class App\\Models\\Product uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types#'
+        - '#Method .+::mype\(\) should return Illuminate\Database\Eloquent\Relations\BelongsTo#'
+        - '#Method .+::product\(\) should return Illuminate\Database\Eloquent\Relations\BelongsTo#'
+        - '#Method App\\Models\\MypeProduct::mype\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types#'
+        - '#Method App\\Models\\MypeProduct::product\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types#'
+
+    # Configura para que no se informen errores no encontrados
+    reportUnmatchedIgnoredErrors: false

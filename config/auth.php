@@ -40,7 +40,7 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        
+
         'mype' => [ // Guard para las Mypes
             'driver' => 'session',
             'provider' => 'mypes',
@@ -123,5 +123,4 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
-   
 ];

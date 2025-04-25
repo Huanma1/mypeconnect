@@ -3,7 +3,7 @@
 /**
  * Para corrar esto tienes que ir al cmd y poner lo siguiente:
  * php artisan tinker
- * 
+ *
  * Asociar un producto a una Mype con información adicional.
  *
     *$mype = Mype::find(1); // Encuentra la Mype
@@ -16,25 +16,24 @@
     *]);
  */
 
- /**
- * Obtener los productos de una Mype con precios personalizados
- *
-    *$mype = Mype::find(1);
-    *$products = $mype->products; // Obtiene todos los productos asociados a la Mype
+/**
+* Obtener los productos de una Mype con precios personalizados
+*
+   *$mype = Mype::find(1);
+   *$products = $mype->products; // Obtiene todos los productos asociados a la Mype
 
-    *foreach ($products as $product) {
-    *    echo $product->product_name . ' - Precio: ' . $product->pivot->custom_price . ' - Stock: ' . $product->pivot->stock;
-    *}
- */
+   *foreach ($products as $product) {
+   *    echo $product->product_name . ' - Precio: ' . $product->pivot->custom_price . ' - Stock: ' . $product->pivot->stock;
+   *}
+*/
 
- /**
- * Comparar precios de un producto entre diferentes Mypes
- *
-    *$product = Product::find(1);
-    *$mypes = $product->mypes; // Obtiene todas las Mypes que venden este producto
+/**
+* Comparar precios de un producto entre diferentes Mypes
+*
+   *$product = Product::find(1);
+   *$mypes = $product->mypes; // Obtiene todas las Mypes que venden este producto
 
-    *foreach ($mypes as $mype) {
-    *    echo $mype->name . ' - Precio: ' . $mype->pivot->custom_price . ' - Stock: ' . $mype->pivot->stock;
-    *}
- */
-
+   *foreach ($mypes as $mype) {
+   *    echo $mype->name . ' - Precio: ' . $mype->pivot->custom_price . ' - Stock: ' . $mype->pivot->stock;
+   *}
+*/

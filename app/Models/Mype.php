@@ -2,18 +2,26 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable; // Cambiar de Model a Authenticatable
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Mype extends Authenticatable // Cambiar de Model a Authenticatable
+/**
+ * @property int $id
+ * @property string $name
+ */
+class Mype extends Authenticatable
 {
+    /**
+     * @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<Mype>>
+     */
     use HasFactory, Notifiable;
 
-    protected $table = 'mypes'; 
+    protected $table = 'mypes';
 
-    // Campos que se pueden asignar masivamente 
-    protected $fillable = [ 
+    protected $fillable = [
         'name',
         'email',
         'password',
@@ -24,36 +32,54 @@ class Mype extends Authenticatable // Cambiar de Model a Authenticatable
     ];
 
     protected $hidden = [
-        'password', // Oculta la contraseña al serializar el modelo
+        'password',
         'remember_token',
     ];
 
     /**
      * Relación muchos a muchos con productos.
+     *
+     * @return BelongsToMany<Product, Mype, MypeProduct>
      */
-    public function products()
+    public function products(): BelongsToMany
     {
+        /** @var BelongsToMany<Product, Mype, MypeProduct> */
         return $this->belongsToMany(Product::class, 'mype_products')
-                    ->withPivot('custom_price', 'stock' , 'product_rate') // Incluye los campos adicionales de la tabla pivote
-                    ->withTimestamps();
+            ->using(MypeProduct::class)
+            ->withPivot('custom_price', 'stock', 'product_rate');
     }
 
-    public function inventoryHistories()
+    /**
+     * Relación uno a muchos con los historiales de inventario.
+     *
+     * @return HasMany<InventoryHistory, Mype>
+     */
+    public function inventoryHistories(): HasMany
     {
+        /** @var HasMany<InventoryHistory, Mype> */
         return $this->hasMany(InventoryHistory::class);
     }
 
-    public function registrarCambioStock($productId, $cantidad, $tipo, $comentario = null)
+    /**
+     * Registrar el cambio de stock de un producto.
+     *
+     *
+     * @throws \Exception
+     */
+    public function registrarCambioStock(int $productId, float|int $cantidad, string $tipo, ?string $comentario = null): void
     {
-        $productPivot = $this->products()->find($productId)?->pivot;
+        $product = $this->products()->where('product_id', $productId)->first();
 
-        if (!$productPivot) {
-            throw new \Exception('El producto no está asociado a esta MYPE.');
+        if (! $product || ! isset($product->pivot->stock)) {
+            throw new \Exception('El producto no está asociado a esta MYPE o no tiene stock definido.');
         }
 
+        $stockActual = intval($product->pivot->stock ?? 0);
+        $cantidadInt = intval($cantidad);
+
         $nuevoStock = $tipo === 'entrada'
-            ? $productPivot->stock + $cantidad
-            : $productPivot->stock - $cantidad;
+            ? $stockActual + $cantidadInt
+            : $stockActual - $cantidadInt;
 
         if ($nuevoStock < 0) {
             throw new \Exception('El stock no puede ser negativo.');
@@ -61,7 +87,7 @@ class Mype extends Authenticatable // Cambiar de Model a Authenticatable
 
         $this->products()->updateExistingPivot($productId, ['stock' => $nuevoStock]);
 
-        \App\Models\InventoryHistory::create([
+        InventoryHistory::create([
             'mype_id' => $this->id,
             'product_id' => $productId,
             'cantidad_cambiada' => $cantidad,

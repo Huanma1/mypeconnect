@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Product;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class WelcomeController extends Controller
 {
-    public function index()
+    /**
+     * Display a listing of the products.
+     */
+    public function index(): Response
     {
         $products = Product::with('mypes')->paginate(8);
 
@@ -18,7 +21,10 @@ class WelcomeController extends Controller
         ]);
     }
 
-    public function showWelcome()
+    /**
+     * Show the welcome page with products and categories.
+     */
+    public function showWelcome(): Response
     {
         $products = Product::with('mypes')->paginate(8);
 

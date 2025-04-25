@@ -1,7 +1,7 @@
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { Product, Paginated } from '@/types';
-import MainLayout from '@/components/MainLayout'; // Cambiado a MainLayout
+import MainLayout from '@/components/MainLayout';
 
 interface Props {
     products: Paginated<Product>;
@@ -20,7 +20,7 @@ export default function ProductList({ products, filters, categories }: Props) {
 
     const handleFilter = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-    
+
         router.get('/products', {
             category,
             min_price: minPrice,
@@ -45,7 +45,7 @@ export default function ProductList({ products, filters, categories }: Props) {
     };
 
     return (
-        <MainLayout> {/* Cambiado a MainLayout */}
+        <MainLayout>
             <div className="py-8">
                 <h1 className="text-3xl font-bold mb-6">Productos Disponibles</h1>
 
@@ -102,22 +102,26 @@ export default function ProductList({ products, filters, categories }: Props) {
                 {/* Lista de productos */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {products?.data?.length > 0 ? (
-                        products.data.map((product) => (
-                            <Link
-                                key={product.id}
-                                href={`/products/${product.id}`} // Ruta al detalle del producto
-                                className="bg-white p-4 rounded shadow hover:shadow-lg transition-all"
-                            >
-                                <h2 className="text-lg font-semibold">{product.product_name}</h2>
-                                <p className="text-gray-600">{product.product_description}</p>
-                                <p className="text-green-500 font-bold">
-                                    Desde: ${product.mypes.length > 0 ? product.mypes[0]?.pivot?.custom_price : 'N/A'}
-                                </p>
-                                <p className="text-yellow-500">
-                                    Calificación: {product.mypes.length > 0 ? product.mypes[0]?.pivot?.product_rate : 'N/A'}
-                                </p>
-                            </Link>
-                        ))
+                        products.data.map((product) => {
+                            const mype = product.mypes.length > 0 ? product.mypes[0] : null;
+
+                            return (
+                                <Link
+                                    key={product.id}
+                                    href={`/products/${product.id}`} // Ruta al detalle del producto
+                                    className="bg-white p-4 rounded shadow hover:shadow-lg transition-all"
+                                >
+                                    <h2 className="text-lg font-semibold">{product.product_name}</h2>
+                                    <p className="text-gray-600">{product.product_description}</p>
+                                    <p className="text-green-500 font-bold">
+                                        Desde: ${mype?.pivot?.custom_price ?? 'N/A'}
+                                    </p>
+                                    <p className="text-yellow-500">
+                                        Calificación: {mype?.pivot?.product_rate ?? 'N/A'}
+                                    </p>
+                                </Link>
+                            );
+                        })
                     ) : (
                         <p>No hay productos disponibles.</p>
                     )}

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\Mype;
+use App\Models\Product;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -109,16 +110,18 @@ class ProductController extends Controller
             'products' => $products,
             'categories' => $categories,
             'filters' => $request->only(['category', 'min_price', 'max_price']),
-            'auth' => $user, 
+            'auth' => $user,
         ]);
     }
 
-     // Mostrar detalles de un producto
+    /**
+     * Mostrar un producto específico.
+     */
     public function show($id)
     {
         $product = Product::with('mypes')->find($id);
 
-        if (!$product) {
+        if (! $product) {
             return redirect()->route('products.index')->with('error', 'Producto no encontrado.');
         }
 
@@ -126,17 +129,21 @@ class ProductController extends Controller
             'product' => $product,
         ]);
     }
+
+    /**
+     * Mostrar productos con stock disponible.
+     */
     public function listProductsWithStock(Request $request)
     {
         $mype = Auth::guard('mype')->user();
 
-        if (!$mype) {
+        if (! $mype) {
             return redirect()->route('login')->withErrors(['error' => 'No estás autenticado.']);
         }
 
         // Obtener el término de búsqueda
         $search = $request->input('search');
-        
+
         /** @var \App\Models\Mype $mype */
         // Obtener los productos asociados a la MYPE y aplicar el filtro de búsqueda
         $products = $mype->products()
@@ -150,5 +157,40 @@ class ProductController extends Controller
         return view('products.manage', [
             'products' => $products,
         ]);
+    }
+
+    /**
+     * Mostrar los productos de un MYPE.
+     */
+    public function listProducts(int $mypeId): View
+    {
+        // Buscar el MYPE por ID
+        $mype = Mype::find($mypeId);
+
+        if (! $mype) {
+            abort(404, 'MYPE no encontrado');
+        }
+
+        // Obtener los productos asociados a este MYPE
+        $products = $mype->products()->get();
+
+        // Devolver la vista con los productos
+        return view('product.index', compact('products'));
+    }
+
+    /**
+     * Listar los productos con orden por fecha.
+     */
+    public function listProductsOrdered(string $order = 'asc'): View
+    {
+        // Validar si el parámetro 'order' es válido
+        $validOrders = ['asc', 'desc'];
+        $order = in_array($order, $validOrders) ? $order : 'asc';
+
+        // Obtener productos ordenados por fecha
+        $products = Product::orderBy('created_at', $order)->get();
+
+        // Devolver la vista con los productos ordenados
+        return view('product.index', compact('products'));
     }
 }

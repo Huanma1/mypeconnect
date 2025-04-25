@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\Auth\MypeAuthController;
+use App\Http\Controllers\MypeController;
+use App\Http\Controllers\MypeProductController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\MypeController;
-use App\Http\Controllers\WelcomeController;
-use App\Http\Controllers\StockController;
 
 // Página de inicio
 Route::get('/', [WelcomeController::class, 'showWelcome'])->name('home');
@@ -22,13 +24,14 @@ Route::middleware(['auth:mype'])->group(function () {
     Route::get('/dashboard/products', [ProductController::class, 'listProductsWithStock'])->name('dashboard.products.list');
     Route::post('/dashboard/products/{productId}/update-stock-and-price', [StockController::class, 'updateStockAndPrice'])->name('dashboard.products.updateStockAndPrice');
 
-
+    Route::get('/mype/{mypeId}/bajo-stock', [MypeProductController::class, 'bajoStockPorMype']);
 });
-
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
+Route::get('mype/login', [MypeAuthController::class, 'showLoginForm'])->name('mype.login');
+Route::post('mype/login', [MypeAuthController::class, 'login'])->name('mype.login.submit');
 // Rutas de registro
 Route::get('/mypes/register', [MypeController::class, 'create'])->name('mypes.register');
 Route::post('/mypes/register', [MypeController::class, 'store'])->name('mypes.store');

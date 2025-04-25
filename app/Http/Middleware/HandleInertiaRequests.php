@@ -10,7 +10,7 @@ use Tighten\Ziggy\Ziggy;
 class HandleInertiaRequests extends Middleware
 {
     /**
-     * The root template that's loaded on the first page visit.
+     * El template raíz que se carga en la primera visita de la página.
      *
      * @see https://inertiajs.com/server-side-setup#root-template
      *
@@ -19,7 +19,7 @@ class HandleInertiaRequests extends Middleware
     protected $rootView = 'app';
 
     /**
-     * Determines the current asset version.
+     * Determina la versión del activo actual.
      *
      * @see https://inertiajs.com/asset-versioning
      */
@@ -29,7 +29,7 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * Define the props that are shared by default.
+     * Define las propiedades que se comparten por defecto.
      *
      * @see https://inertiajs.com/shared-data
      *
@@ -37,11 +37,23 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
+        // Obtener el quote de manera segura y asegurar que sea una cadena de texto
+        $quote = Inspiring::quotes()->random();
 
-        return array_merge(parent::share($request), [
+        // Verificar si $quote es una cadena, y si no, convertirlo en una cadena vacía
+        $quote = is_string($quote) ? $quote : '';
+
+        // Dividir el quote en mensaje y autor
+        $quoteParts = explode('-', $quote);
+
+        // Asignar valores a mensaje y autor, con una verificación explícita para el autor
+        $message = trim($quoteParts[0]);
+        $author = isset($quoteParts[1]) ? trim($quoteParts[1]) : 'Autor no disponible';
+
+        // Retornar los datos compartidos con el tipo de retorno adecuado
+        return [
             'name' => config('app.name'),
-            'quote' => ['message' => trim($message), 'author' => trim($author)],
+            'quote' => ['message' => $message, 'author' => $author],
             'auth' => [
                 'user' => $request->user() ?: null,
             ],
@@ -49,6 +61,6 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
-        ]);
+        ];
     }
 }
