@@ -42,15 +42,16 @@ const AlertaStock: React.FC<AlertaStockProps> = ({ productos }) => {
       {!isMinimized && (
         <ul className="mt-2 list-disc pl-5">
           {productos.map((producto) => {
-            const mype = producto.mypes[0]; // Accede al primer elemento de 'mypes'
-            if (!mype) return null; // Maneja el caso en que 'mypes' esté vacío
+            const prod = producto.product; // producto es un MypeProduct, no un Producto
+            if (!prod) return null;
 
             return (
               <li key={producto.id}>
-                {producto.product_name} (stock: {mype.pivot.stock}, mínimo: {mype.pivot.min_stock})
+                {prod.product_name} (stock: {producto.stock}, mínimo: {producto.min_stock})
               </li>
             );
           })}
+
         </ul>
       )}
     </div>
