@@ -23,6 +23,11 @@ const mainNavItems: NavItem[] = [
         href: '/dashboard/products',
         icon: BookOpen,
     },
+    {
+        title: 'Historial de Cambios', 
+        href: '/dashboard/inventory-history', 
+        icon: Folder, 
+    },
 
 ];
 

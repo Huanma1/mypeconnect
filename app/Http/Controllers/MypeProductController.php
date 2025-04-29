@@ -10,13 +10,24 @@ class MypeProductController extends Controller
     /**
      * Método para obtener los productos con bajo stock de una MYPE específica.
      */
-    public function bajoStockPorMype(int $mypeId): JsonResponse
+    public function bajoStockPorMype($mypeId)
     {
-        $productos = MypeProduct::where('mype_id', $mypeId)
-            ->whereColumn('stock', '<', 'min_stock')
-            ->with('product') // Asegúrate de que la relación esté configurada
-            ->get();
+        $productosBajoStock = MypeProduct::where('mype_id', $mypeId)
+            ->whereColumn('stock', '<', 'min_stock') // Comparar stock con min_stock
+            ->with('product') // Relación con el producto
+            ->get()
+            ->map(function ($mypeProduct) {
+                return [
+                    'id' => $mypeProduct->product->id,
+                    'product_name' => $mypeProduct->product->product_name,
+                    'product_description' => $mypeProduct->product->product_description,
+                    'category' => $mypeProduct->product->category,
+                    'rating' => $mypeProduct->product->rating,
+                    'stock' => $mypeProduct->stock,
+                    'min_stock' => $mypeProduct->min_stock,
+                ];
+            });
 
-        return response()->json($productos);
+        return response()->json($productosBajoStock);
     }
 }

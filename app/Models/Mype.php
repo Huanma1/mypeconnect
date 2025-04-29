@@ -66,20 +66,20 @@ class Mype extends Authenticatable
      *
      * @throws \Exception
      */
-    public function registrarCambioStock(int $productId, float|int $cantidad, string $tipo, ?string $comentario = null): void
+    public function registrarCambioStock(int $productId, int|float $cantidad, string $tipo, ?string $comentario = null): void
     {
         $product = $this->products()->where('product_id', $productId)->first();
-
-        if (! $product || ! isset($product->pivot->stock)) {
+        if (!$product || !isset($product->pivot->stock)) {
             throw new \Exception('El producto no está asociado a esta MYPE o no tiene stock definido.');
+        }
+
+        if (!in_array($tipo, ['entrada', 'salida'])) {
+            throw new \Exception('Tipo de cambio no válido.');
         }
 
         $stockActual = intval($product->pivot->stock ?? 0);
         $cantidadInt = intval($cantidad);
-
-        $nuevoStock = $tipo === 'entrada'
-            ? $stockActual + $cantidadInt
-            : $stockActual - $cantidadInt;
+        $nuevoStock = $tipo === 'entrada' ? $stockActual + $cantidadInt : $stockActual - $cantidadInt;
 
         if ($nuevoStock < 0) {
             throw new \Exception('El stock no puede ser negativo.');
@@ -90,7 +90,7 @@ class Mype extends Authenticatable
         InventoryHistory::create([
             'mype_id' => $this->id,
             'product_id' => $productId,
-            'cantidad_cambiada' => $cantidad,
+            'cantidad_cambiada' => $cantidadInt,
             'tipo_cambio' => $tipo,
             'comentario' => $comentario,
         ]);

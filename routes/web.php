@@ -8,6 +8,7 @@ use App\Http\Controllers\StockController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 // Página de inicio
 Route::get('/', [WelcomeController::class, 'showWelcome'])->name('home');
@@ -15,8 +16,17 @@ Route::get('/', [WelcomeController::class, 'showWelcome'])->name('home');
 // Rutas protegidas por autenticación
 Route::middleware(['auth:mype'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('Dashboard');
+        $mype = Auth::guard('mype')->user();
+    
+        if (! $mype) {
+            return redirect()->route('mype.login');
+        }
+    
+        return Inertia::render('Dashboard', [
+            'mypeId' => $mype->id, // Pasar el ID de la MYPE al frontend
+        ]);
     })->name('dashboard');
+    
 
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'mype'])->name('products.mype');
@@ -25,6 +35,10 @@ Route::middleware(['auth:mype'])->group(function () {
     Route::post('/dashboard/products/{productId}/update-stock-and-price', [StockController::class, 'updateStockAndPrice'])->name('dashboard.products.updateStockAndPrice');
 
     Route::get('/mype/{mypeId}/bajo-stock', [MypeProductController::class, 'bajoStockPorMype']);
+
+    // Nueva ruta para el historial de cambios
+    Route::get('/dashboard/inventory-history', [MypeController::class, 'showInventoryHistory'])
+        ->name('dashboard.inventory.history');
 });
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');

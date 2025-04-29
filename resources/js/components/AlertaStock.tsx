@@ -6,15 +6,8 @@ interface Producto {
   product_description: string;
   category: string;
   rating: string;
-  mypes: {
-    id: number;
-    name: string;
-    pivot: {
-      custom_price: number;
-      stock: number;
-      min_stock: number;
-    };
-  }[];
+  stock: number; // Agregar stock directamente
+  min_stock: number; // Agregar min_stock directamente
 }
 
 interface AlertaStockProps {
@@ -41,17 +34,11 @@ const AlertaStock: React.FC<AlertaStockProps> = ({ productos }) => {
       </div>
       {!isMinimized && (
         <ul className="mt-2 list-disc pl-5">
-          {productos.map((producto) => {
-            const prod = producto.product; // producto es un MypeProduct, no un Producto
-            if (!prod) return null;
-
-            return (
-              <li key={producto.id}>
-                {prod.product_name} (stock: {producto.stock}, mínimo: {producto.min_stock})
-              </li>
-            );
-          })}
-
+          {productos.map((producto) => (
+            <li key={producto.id}>
+              {producto.product_name} (stock: {producto.stock}, mínimo: {producto.min_stock})
+            </li>
+          ))}
         </ul>
       )}
     </div>
