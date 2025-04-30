@@ -64,7 +64,8 @@ class MypeController extends Controller
             // Manejar excepciones, como errores de base de datos u otros problemas inesperados
             return redirect()->route('mypes.register')->withErrors(['error' => 'Hubo un error al registrar la MYPE. Por favor, intenta de nuevo.']);
         }
-    } 
+    }
+
     /**
      * Muestra el historial de cambios en la MYPE.
      */
@@ -72,13 +73,13 @@ class MypeController extends Controller
     {
         // Obtener el MYPE autenticado
         $mype = Auth::guard('mype')->user();
-        
+
         // Obtener el historial de inventario de la Mype
         $inventoryHistories = $mype->inventoryHistories()
             ->with('product') // Relación con el producto
             ->orderBy('created_at', 'desc')
             ->paginate(10); // Paginación
-    
+
         return view('products.inventory-history', compact('inventoryHistories'));
     }
 }

@@ -69,11 +69,11 @@ class Mype extends Authenticatable
     public function registrarCambioStock(int $productId, int|float $cantidad, string $tipo, ?string $comentario = null): void
     {
         $product = $this->products()->where('product_id', $productId)->first();
-        if (!$product || !isset($product->pivot->stock)) {
+        if (! $product || ! isset($product->pivot->stock)) {
             throw new \Exception('El producto no está asociado a esta MYPE o no tiene stock definido.');
         }
 
-        if (!in_array($tipo, ['entrada', 'salida'])) {
+        if (! in_array($tipo, ['entrada', 'salida'])) {
             throw new \Exception('Tipo de cambio no válido.');
         }
 

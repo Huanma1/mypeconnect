@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\MypeProduct;
-use Illuminate\Http\JsonResponse;
 
 class MypeProductController extends Controller
 {
@@ -13,8 +12,8 @@ class MypeProductController extends Controller
     public function bajoStockPorMype($mypeId)
     {
         $productosBajoStock = MypeProduct::where('mype_id', $mypeId)
-            ->whereColumn('stock', '<', 'min_stock') // Comparar stock con min_stock
-            ->with('product') // Relación con el producto
+            ->whereColumn('stock', '<', 'min_stock') 
+            ->with('product') 
             ->get()
             ->map(function ($mypeProduct) {
                 return [

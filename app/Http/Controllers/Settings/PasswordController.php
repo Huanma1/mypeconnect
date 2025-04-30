@@ -30,8 +30,9 @@ class PasswordController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
+        /** @var array{password: string} $validated */
         $validated = $request->validate([
-            'current_password' => ['required', 'current_password:mype'], // Importante indicar el guard aquí
+            'current_password' => ['required', 'current_password:mype'],
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
@@ -41,19 +42,9 @@ class PasswordController extends Controller
             return redirect()->route('login')->withErrors(['error' => 'MYPE no autenticada.']);
         }
 
-        $mype = Auth::guard('mype')->user();
-
-        if (! $mype) {
-            return redirect()->route('login')->withErrors(['error' => 'MYPE no autenticada.']);
-        }
-
-        // Asegúrate de que $mype es una instancia de Mype
-        if (! $mype instanceof \App\Models\Mype) {
-            return redirect()->route('login')->withErrors(['error' => 'Usuario no válido.']);
-        }
-
+        // Eliminada la comprobación `instanceof`, ya que $mype se supone que es una instancia de Mype
         $mype->password = Hash::make($validated['password']);
-        $mype->save();  // El método save() debe funcionar ahora
+        $mype->save();  // Guarda la nueva contraseña
 
         return back()->with('status', 'Contraseña actualizada correctamente.');
     }

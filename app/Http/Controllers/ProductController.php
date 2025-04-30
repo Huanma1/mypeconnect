@@ -4,101 +4,90 @@ namespace App\Http\Controllers;
 
 use App\Models\Mype;
 use App\Models\Product;
-use Illuminate\Contracts\View\View;
+use Illuminate\Contracts\View\View as ViewContract;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View as ViewFacade;
 use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
+use Illuminate\Http\RedirectResponse;
 
 class ProductController extends Controller
 {
-    public function create()
+    public function create(): ViewContract
     {
-        return view('products.create');
+        return ViewFacade::make('products.create');
     }
 
-    public function mype(Request $request)
+    public function mype(Request $request): RedirectResponse
     {
-        // Validar los datos del formulario
         $request->validate([
             'product_name' => 'required|string|max:255',
             'product_description' => 'required|string',
             'category' => 'required|string|max:255',
-            'custom_price' => 'nullable|numeric|min:0', // Precio personalizado
-            'stock' => 'nullable|integer|min:0', // Stock del producto
+            'custom_price' => 'nullable|numeric|min:0',
+            'stock' => 'nullable|integer|min:0',
             'product_rate' => 'nullable|numeric|min:0|max:5',
         ]);
 
-        // Buscar si el producto ya existe en el sistema
-        $product = Product::where('product_name', $request->product_name)->first();
+        $product = Product::where('product_name', $request->input('product_name'))->first();
 
-        // Si el producto ya existe
+        /** @var Mype $mype */
+        $mype = Auth::guard('mype')->user();
+
         if ($product) {
-            /** @var \App\Models\Mype $mype */
-            $mype = Auth::guard('mype')->user();
-
-            // Verificar si la MYPE ya tiene este producto
             $existingAssociation = $mype->products()->where('product_id', $product->id)->exists();
 
-            // Si el producto ya está asociado a la MYPE, mostrar error
             if ($existingAssociation) {
-                return redirect()->route('products.create') // Redirige correctamente a la vista de crear producto
-                    ->withInput() // Mantiene los datos ingresados
-                    ->withErrors(['product_name' => 'Este producto ya está asociado a tu tienda.']);
+                return redirect()->route('products.create')->withInput()->withErrors([
+                    'product_name' => 'Este producto ya está asociado a tu tienda.',
+                ]);
             }
-            // Asociar el producto a la MYPE con los datos adicionales (precio, stock)
+
             $mype->products()->attach($product->id, [
-                'custom_price' => $request->custom_price,
-                'stock' => $request->stock,
-                'product_rate' => $request->product_rate ?? 0, // Calificación
+                'custom_price' => $request->input('custom_price'),
+                'stock' => $request->input('stock'),
+                'product_rate' => $request->input('product_rate', 0),
             ]);
 
             return redirect()->route('products.create')->with('success', 'Producto asociado a tu inventario exitosamente.');
         }
 
-        // Si el producto no existe, crearlo
         $product = Product::create([
-            'product_name' => $request->product_name,
-            'product_description' => $request->product_description,
-            'category' => $request->category,
+            'product_name' => $request->input('product_name'),
+            'product_description' => $request->input('product_description'),
+            'category' => $request->input('category'),
             'product_rate' => 0,
         ]);
 
-        // Obtener la MYPE autenticada
-        /** @var \App\Models\Mype $mype */
-        $mype = Auth::guard('mype')->user();
-
-        // Asociar el producto a la MYPE con datos adicionales
         $mype->products()->attach($product->id, [
-            'custom_price' => $request->custom_price,
-            'stock' => $request->stock,
-            'product_rate' => $request->product_rate ?? 0, // Calificación
+            'custom_price' => $request->input('custom_price'),
+            'stock' => $request->input('stock'),
+            'product_rate' => $request->input('product_rate', 0),
         ]);
 
-        // Redirigir con un mensaje de éxito
         return redirect()->route('products.create')->with('success', 'Producto creado y asociado a tu inventario exitosamente.');
     }
 
-    public function index(Request $request)
+    public function index(Request $request): InertiaResponse
     {
-        $user = $request->user(); // Puede ser null si el usuario no está autenticado
+        $user = $request->user();
 
         $query = Product::with(['mypes' => function ($q) {
-            $q->orderBy('custom_price');
+            $q->orderBy('pivot_custom_price');
         }]);
 
-        // Filtro por categoría
         if ($request->filled('category')) {
-            $query->where('category', $request->category);
+            $query->where('category', $request->input('category'));
         }
 
-        // Filtro por rango de precios
         if ($request->filled('min_price') || $request->filled('max_price')) {
             $query->whereHas('mypes', function ($q) use ($request) {
                 if ($request->filled('min_price')) {
-                    $q->where('custom_price', '>=', $request->min_price);
+                    $q->where('custom_price', '>=', $request->input('min_price'));
                 }
                 if ($request->filled('max_price')) {
-                    $q->where('custom_price', '<=', $request->max_price);
+                    $q->where('custom_price', '<=', $request->input('max_price'));
                 }
             });
         }
@@ -114,14 +103,12 @@ class ProductController extends Controller
         ]);
     }
 
-    /**
-     * Mostrar un producto específico.
-     */
-    public function show($id)
+
+    public function show(int $id): InertiaResponse|RedirectResponse
     {
         $product = Product::with('mypes')->find($id);
 
-        if (! $product) {
+        if (!$product) {
             return redirect()->route('products.index')->with('error', 'Producto no encontrado.');
         }
 
@@ -130,67 +117,48 @@ class ProductController extends Controller
         ]);
     }
 
-    /**
-     * Mostrar productos con stock disponible.
-     */
-    public function listProductsWithStock(Request $request)
+    public function listProductsWithStock(Request $request): ViewContract|RedirectResponse
     {
         $mype = Auth::guard('mype')->user();
 
-        if (! $mype) {
+        if (!$mype) {
             return redirect()->route('login')->withErrors(['error' => 'No estás autenticado.']);
         }
 
-        // Obtener el término de búsqueda
-        $search = $request->input('search');
+        $search = (string) $request->input('search', '');
 
-        /** @var \App\Models\Mype $mype */
-        // Obtener los productos asociados a la MYPE y aplicar el filtro de búsqueda
         $products = $mype->products()
             ->withPivot('stock', 'custom_price')
-            ->when($search, function ($query, $search) {
-                $query->where('product_name', 'like', "%{$search}%");
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where('product_name', 'like', '%' . $search . '%');
             })
             ->get();
 
-        // Renderizar la vista de gestión de productos
-        return view('products.manage', [
+        return ViewFacade::make('products.manage', [
             'products' => $products,
         ]);
     }
 
-    /**
-     * Mostrar los productos de un MYPE.
-     */
-    public function listProducts(int $mypeId): View
+    public function listProducts(int $mypeId): ViewContract
     {
-        // Buscar el MYPE por ID
         $mype = Mype::find($mypeId);
 
-        if (! $mype) {
+        if (!$mype) {
             abort(404, 'MYPE no encontrado');
         }
 
-        // Obtener los productos asociados a este MYPE
         $products = $mype->products()->get();
 
-        // Devolver la vista con los productos
-        return view('product.index', compact('products'));
+        return ViewFacade::make('product.index', compact('products'));
     }
 
-    /**
-     * Listar los productos con orden por fecha.
-     */
-    public function listProductsOrdered(string $order = 'asc'): View
+    public function listProductsOrdered(string $order = 'asc'): ViewContract
     {
-        // Validar si el parámetro 'order' es válido
         $validOrders = ['asc', 'desc'];
-        $order = in_array($order, $validOrders) ? $order : 'asc';
+        $order = in_array($order, $validOrders, true) ? $order : 'asc';
 
-        // Obtener productos ordenados por fecha
         $products = Product::orderBy('created_at', $order)->get();
 
-        // Devolver la vista con los productos ordenados
-        return view('product.index', compact('products'));
+        return ViewFacade::make('product.index', compact('products'));
     }
 }

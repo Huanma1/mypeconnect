@@ -69,7 +69,7 @@ Route::middleware('guest:mype')->group(function () {
 // Rutas para Mypes autenticadas
 Route::middleware(['auth:mype'])->group(function () {
     Route::get('/dashboard', function () {
-        return Inertia::render('dashboard'); 
+        return Inertia::render('dashboard');
     })->name('dashboard');
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
