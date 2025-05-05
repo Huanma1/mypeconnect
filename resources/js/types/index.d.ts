@@ -2,7 +2,7 @@ import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
 
 export interface Auth {
-    user: User;
+    user: Mype;
 }
 
 export interface BreadcrumbItem {
@@ -30,16 +30,19 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
-export interface User {
+export interface Mype {
     id: number;
     name: string;
     email: string;
-    avatar?: string;
-    email_verified_at: string | null;
+    phone_number?: string;
+    mype_rate?: number;
+    mype_address?: string;
+    mype_description?: string;
     created_at: string;
     updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
-}
+    [key: string]: unknown;
+  }
+  
 
 export interface Product {
     id: number;
