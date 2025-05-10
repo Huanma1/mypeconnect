@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class MypeAuthController extends Controller
 {
@@ -23,9 +25,9 @@ class MypeAuthController extends Controller
     /**
      * Muestra el formulario de inicio de sesión.
      */
-    public function showLoginForm(): View
+    public function showLoginForm(): Response
     {
-        return view('mypes.login');
+        return Inertia::render('Login');
     }
 
     /**
