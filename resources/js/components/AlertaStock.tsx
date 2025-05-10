@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
-
-interface Producto {
-  id: number;
-  product_name: string;
-  product_description: string;
-  category: string;
-  rating: string;
-  stock: number; // Agregar stock directamente
-  min_stock: number; // Agregar min_stock directamente
-}
+import { Product } from '@/types/index';
 
 interface AlertaStockProps {
-  productos: Producto[];
+  productos: Product[]; // Aquí aseguramos que productos es de tipo Product[]
 }
 
 const AlertaStock: React.FC<AlertaStockProps> = ({ productos }) => {
@@ -34,11 +25,15 @@ const AlertaStock: React.FC<AlertaStockProps> = ({ productos }) => {
       </div>
       {!isMinimized && (
         <ul className="mt-2 list-disc pl-5">
-          {productos.map((producto) => (
-            <li key={producto.id}>
-              {producto.product_name} (stock: {producto.stock}, mínimo: {producto.min_stock})
-            </li>
-          ))}
+          {productos && productos.length > 0 ? (
+            productos.map((producto) => (
+              <li key={producto.id}>
+                {producto.product_name} (stock: {producto.stock}, mínimo: {producto.min_stock})
+              </li>
+            ))
+          ) : (
+            <li>No hay productos con bajo stock.</li>
+          )}
         </ul>
       )}
     </div>

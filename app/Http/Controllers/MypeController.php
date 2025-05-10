@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\InventoryHistory;
 
 class MypeController extends Controller
 {
@@ -36,19 +38,11 @@ class MypeController extends Controller
         ]);
 
         try {
-            // Asegurarse de que la contraseña sea un string antes de pasársela a Hash::make()
-            $password = $request->password;
-
-            // Si la contraseña no es un string, convertirla
-            if (! is_string($password)) {
-                $password = strval($password);
-            }
-
             // Crear el nuevo MYPE
             $mype = Mype::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($password),  // Asegura que la contraseña sea un string
+                'password' => Hash::make($request->password),  // Asegura que la contraseña sea un string
                 'phone_number' => $request->phone_number,
                 'mype_rate' => $request->mype_rate ?? 0, // Valor predeterminado si no se especifica
                 'mype_address' => $request->mype_address,
@@ -61,7 +55,7 @@ class MypeController extends Controller
             // Redirigir a la página de dashboard con un mensaje de éxito
             return redirect()->route('dashboard')->with('success', 'Mype registrada correctamente.');
         } catch (\Exception $e) {
-            // Manejar excepciones, como errores de base de datos u otros problemas inesperados
+            // Captura de errores con manejo específico
             return redirect()->route('mypes.register')->withErrors(['error' => 'Hubo un error al registrar la MYPE. Por favor, intenta de nuevo.']);
         }
     }
@@ -69,8 +63,9 @@ class MypeController extends Controller
     /**
      * Muestra el historial de cambios en la MYPE.
      */
-    public function showInventoryHistory(Request $request): View
+    public function showInventoryHistory(Request $request)
     {
+        /** @var \App\Models\Mype $mype */
         // Obtener el MYPE autenticado
         $mype = Auth::guard('mype')->user();
 

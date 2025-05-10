@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
@@ -57,7 +58,7 @@ class Mype extends Authenticatable
     public function inventoryHistories(): HasMany
     {
         /** @var HasMany<InventoryHistory, Mype> */
-        return $this->hasMany(InventoryHistory::class);
+        return $this->hasMany(InventoryHistory::class, 'mype_id');
     }
 
     /**

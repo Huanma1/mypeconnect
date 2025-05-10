@@ -103,7 +103,7 @@ export default function ProductList({ products, filters, categories }: Props) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {products?.data?.length > 0 ? (
                         products.data.map((product) => {
-                            const mype = product.mypes.length > 0 ? product.mypes[0] : null;
+                            const mype = product.mypes?.[0]; // Usar la primera mype si existe
 
                             return (
                                 <Link
