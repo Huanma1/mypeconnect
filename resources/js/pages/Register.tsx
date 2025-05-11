@@ -24,140 +24,117 @@ export default function RegisterModal({ onClose }: RegisterModalProps) {
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: '0',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      backdropFilter: 'blur(4px)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-    }}>
-      <div style={{
-        backgroundColor: '#fff',
-        borderRadius: '8px',
-        padding: '2rem',
-        width: '100%',
-        maxWidth: '500px',
-        position: 'relative',
-        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-      }}>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-[30rem] relative shadow-xl overflow-y-auto max-h-[90vh]">
         <button
           onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '10px',
-            right: '15px',
-            fontSize: '24px',
-            border: 'none',
-            background: 'none',
-            cursor: 'pointer',
-          }}
+          className="absolute top-1 right-2 text-gray-600 hover:text-black text-2xl font-bold"
         >
           &times;
         </button>
 
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Registrar Mype</h2>
+        <h2 className="text-2xl font-semibold mb-4">Registrar Mype</h2>
 
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Nombre"
-            required
-            value={data.name}
-            onChange={(e) => setData('name', e.target.value)}
-            style={inputStyle}
-          />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block font-medium text-sm">Nombre</label>
+            <input
+              id="name"
+              type="text"
+              value={data.name}
+              onChange={(e) => setData('name', e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
+              required
+            />
+            {errors.name && <div className="text-red-600 text-sm mt-1">{errors.name}</div>}
+          </div>
 
-          <input
-            type="email"
-            placeholder="Correo Electrónico"
-            required
-            value={data.email}
-            onChange={(e) => setData('email', e.target.value)}
-            style={inputStyle}
-          />
+          <div>
+            <label htmlFor="email" className="block font-medium text-sm">Correo Electrónico</label>
+            <input
+              id="email"
+              type="email"
+              value={data.email}
+              onChange={(e) => setData('email', e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
+              required
+            />
+            {errors.email && <div className="text-red-600 text-sm mt-1">{errors.email}</div>}
+          </div>
 
-          <input
-            type="password"
-            placeholder="Contraseña"
-            required
-            value={data.password}
-            onChange={(e) => setData('password', e.target.value)}
-            style={inputStyle}
-          />
+          <div>
+            <label htmlFor="password" className="block font-medium text-sm">Contraseña</label>
+            <input
+              id="password"
+              type="password"
+              value={data.password}
+              onChange={(e) => setData('password', e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
+              required
+            />
+            {errors.password && <div className="text-red-600 text-sm mt-1">{errors.password}</div>}
+          </div>
 
-          <input
-            type="password"
-            placeholder="Confirmar Contraseña"
-            required
-            value={data.password_confirmation}
-            onChange={(e) => setData('password_confirmation', e.target.value)}
-            style={inputStyle}
-          />
+          <div>
+            <label htmlFor="password_confirmation" className="block font-medium text-sm">Confirmar Contraseña</label>
+            <input
+              id="password_confirmation"
+              type="password"
+              value={data.password_confirmation}
+              onChange={(e) => setData('password_confirmation', e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
+              required
+            />
+            {errors.password_confirmation && (
+              <div className="text-red-600 text-sm mt-1">{errors.password_confirmation}</div>
+            )}
+          </div>
 
-          <input
-            type="text"
-            placeholder="Teléfono"
-            value={data.phone_number}
-            onChange={(e) => setData('phone_number', e.target.value)}
-            style={inputStyle}
-          />
+          <div>
+            <label htmlFor="phone_number" className="block font-medium text-sm">Teléfono</label>
+            <input
+              id="phone_number"
+              type="text"
+              value={data.phone_number}
+              onChange={(e) => setData('phone_number', e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
+            />
+            {errors.phone_number && <div className="text-red-600 text-sm mt-1">{errors.phone_number}</div>}
+          </div>
 
-          <input
-            type="text"
-            placeholder="Dirección"
-            required
-            value={data.mype_address}
-            onChange={(e) => setData('mype_address', e.target.value)}
-            style={inputStyle}
-          />
+          <div>
+            <label htmlFor="mype_address" className="block font-medium text-sm">Dirección</label>
+            <input
+              id="mype_address"
+              type="text"
+              value={data.mype_address}
+              onChange={(e) => setData('mype_address', e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
+              required
+            />
+            {errors.mype_address && <div className="text-red-600 text-sm mt-1">{errors.mype_address}</div>}
+          </div>
 
-          <textarea
-            placeholder="Descripción"
-            value={data.mype_description}
-            onChange={(e) => setData('mype_description', e.target.value)}
-            style={{ ...inputStyle, height: '80px', resize: 'none' }}
-          />
+          <div>
+            <label htmlFor="mype_description" className="block font-medium text-sm">Descripción</label>
+            <textarea
+              id="mype_description"
+              value={data.mype_description}
+              onChange={(e) => setData('mype_description', e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
+            />
+            {errors.mype_description && <div className="text-red-600 text-sm mt-1">{errors.mype_description}</div>}
+          </div>
 
           <button
             type="submit"
             disabled={processing}
-            style={{
-              width: '100%',
-              padding: '10px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              marginTop: '1rem',
-            }}
+            className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700 transition"
           >
             Registrar
           </button>
         </form>
-
-        {Object.values(errors).length > 0 && (
-          <div style={{ marginTop: '1rem', color: 'red' }}>
-            <ul>
-              {Object.values(errors).map((error, i) => (
-                <li key={i}>{error}</li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
     </div>
   );
 }
-
-const inputStyle: React.CSSProperties = {
-  display: 'block',
-  width: '100%',
-  padding: '10px',
-  marginBottom: '1rem',
-  borderRadius: '4px',
-  border: '1px solid #ccc',
-};
