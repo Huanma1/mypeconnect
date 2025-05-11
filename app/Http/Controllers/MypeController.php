@@ -8,16 +8,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class MypeController extends Controller
 {
     /**
      * Muestra el formulario de registro para un MYPE.
      */
-    public function create(): View
-    {
-        return view('mypes.register');
-    }
+   public function create(): Response
+{
+    return Inertia::render('Register'); // ajusta la ruta según dónde esté tu componente TSX
+}
 
     /**
      * Almacena un nuevo MYPE en la base de datos.

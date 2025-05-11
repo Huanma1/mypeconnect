@@ -17,9 +17,9 @@ class MypeAuthController extends Controller
     /**
      * Muestra el formulario de registro.
      */
-    public function showRegisterForm(): View
+    public function showResgiterForm(): Response
     {
-        return view('mypes.register');
+        return Inertia::render('Register');
     }
 
     /**
