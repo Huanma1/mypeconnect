@@ -8,13 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
-<<<<<<< HEAD
-use Inertia\Inertia;
-use Inertia\Response;
-=======
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\InventoryHistory;
->>>>>>> arreglo-errores
+use Inertia\Inertia;
+use Inertia\Response;
 
 class MypeController extends Controller
 {
@@ -23,7 +20,7 @@ class MypeController extends Controller
      */
    public function create(): Response
 {
-    return Inertia::render('Register'); // ajusta la ruta según dónde esté tu componente TSX
+    return Inertia::render('Register'); 
 }
 
     /**
