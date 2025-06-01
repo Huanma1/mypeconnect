@@ -9,6 +9,7 @@ use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\WebpayController;
 
 // Página de inicio (pública)
 Route::get('/', [WelcomeController::class, 'showWelcome'])->name('home');
@@ -46,6 +47,10 @@ Route::get('mype/login', [MypeAuthController::class, 'showLoginForm'])->name('my
 Route::post('mype/login', [MypeAuthController::class, 'login'])->name('mype.login.submit');
 Route::get('/mypes/register', [MypeController::class, 'create'])->name('mypes.register');
 Route::post('/mypes/register', [MypeController::class, 'store'])->name('mypes.store');
+
+//RUTAS PARA WEBPAY
+Route::post('/webpay/create', [WebpayController::class, 'create'])->name('webpay.create');
+Route::get('/webpay/callback', [WebpayController::class, 'callback'])->name('webpay.callback');
 
 // Rutas de usuarios (clientes) y autenticación general están en:
 require __DIR__.'/auth.php';
