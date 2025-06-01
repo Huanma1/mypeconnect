@@ -1,93 +1,80 @@
-import { Link, usePage } from '@inertiajs/react';
-import React, { useState } from 'react';
-import type { Mype } from '@/types';
-import LoginModal from '@/pages/Login';
-import RegisterModal from '@/pages/Register';
-import Loading from '@/components/Loading';
+import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Head, usePage } from '@inertiajs/react';
+import AlertaStock from '@/components/AlertaStock';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Product } from '@/types/index';
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
-  const { auth } = usePage<{ auth: { user: Mype | null } }>().props;
-  const [showLogin, setShowLogin] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/dashboard',
+    },
+];
 
-  return (
-    <Loading>
-      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
-      {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />}
+export default function Dashboard() {
+    const { props } = usePage<{ auth: { user: { id: number } } }>();
+    const mypeId = props.auth.user?.id;
 
-      <div style={styles.container}>
-        <header style={styles.header}>
-          <div style={styles.headerContent}>
-            <Link href={route('home')} style={{ display: 'inline-block' }}>
-              <img src="/logo completo.png" alt="Mype Connect" style={styles.logo} />
-            </Link>
+    const [productosBajoStock, setProductosBajoStock] = useState<Product[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
-            <nav style={styles.nav}>
-              {auth?.user ? (
-                <>
-                  <span style={styles.navText}>Bienvenido, {auth.user.name}</span>
-                  <Link href={route('dashboard')} style={styles.link}>Dashboard</Link>
-                </>
-              ) : (
-                <>
-                  <button onClick={() => setShowLogin(true)} style={styles.linkButton}>
-                    Log in
-                  </button>
-                  <button onClick={() => setShowRegister(true)} style={styles.linkButton}>
-                    Register
-                  </button>
-                </>
-              )}
-            </nav>
-          </div>
-        </header>
+    // Función para obtener productos con bajo stock
+    const fetchProductosBajoStock = () => {
+        if (mypeId) {
+            setLoading(true);
+            axios
+                .get(`/mype/${mypeId}/bajo-stock`)
+                .then((res) => {
+                    setProductosBajoStock(res.data);
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    console.error(err);
+                    setError('Error al obtener productos con bajo stock.');
+                    setLoading(false);
+                });
+        }
+    };
 
-        <main style={styles.main}>{children}</main>
-      </div>
-    </Loading>
-  );
+    useEffect(() => {
+        fetchProductosBajoStock();
+    }, [mypeId]);
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Dashboard" />
+            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+                {/* Indicadores de carga y error */}
+                {loading && <div>Loading...</div>}
+                {error && <div className="text-red-500">{error}</div>}
+
+                {/* Mostrar la alerta de productos con bajo stock */}
+                {productosBajoStock.length > 0 && (
+                    <AlertaStock productos={productosBajoStock} />
+                )}
+
+                {/* Grilla de componentes */}
+                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
+                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+                    </div>
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
+                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+                    </div>
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
+                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+                    </div>
+                </div>
+
+                {/* Sección inferior de la página */}
+                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
+                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+                </div>
+            </div>
+        </AppLayout>
+    );
 }
-
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    minHeight: '100vh',
-    backgroundColor: '#f3f4f6',
-    color: '#111827',
-  },
-  header: {
-    padding: '1rem',
-    backgroundColor: '#111827',
-    color: '#fff',
-  },
-  headerContent: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  logo: {
-    height: '40px',
-    transform: 'scale(1.5)',
-  },
-  nav: {
-    display: 'flex',
-    gap: '1rem',
-  },
-  navText: {
-    fontWeight: 500,
-  },
-  link: {
-    color: '#fff',
-    textDecoration: 'underline',
-  },
-  linkButton: {
-    background: 'none',
-    border: 'none',
-    color: '#fff',
-    cursor: 'pointer',
-    textDecoration: 'underline',
-    fontSize: '1rem',
-  },
-  main: {
-    padding: '1.5rem',
-  },
-};
