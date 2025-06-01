@@ -10,10 +10,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Página de inicio
+// Página de inicio (pública)
 Route::get('/', [WelcomeController::class, 'showWelcome'])->name('home');
 
-// Rutas protegidas por autenticación
+// Rutas públicas de productos (accesibles para todos)
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+
+// Rutas protegidas para Mypes (negocios)
 Route::middleware(['auth:mype'])->group(function () {
     Route::get('dashboard', function () {
         $mype = Auth::guard('mype')->user();
@@ -23,7 +27,7 @@ Route::middleware(['auth:mype'])->group(function () {
         }
 
         return Inertia::render('Dashboard', [
-            'mypeId' => $mype->id, // Pasar el ID de la MYPE al frontend
+            'mypeId' => $mype->id,
         ]);
     })->name('dashboard');
 
@@ -34,20 +38,17 @@ Route::middleware(['auth:mype'])->group(function () {
     Route::post('/dashboard/products/{productId}/update-stock-and-price', [StockController::class, 'updateStockAndPrice'])->name('dashboard.products.updateStockAndPrice');
 
     Route::get('/mype/{mypeId}/bajo-stock', [MypeProductController::class, 'bajoStockPorMype']);
-
-    // Nueva ruta para el historial de cambios
-    Route::get('/dashboard/inventory-history', [MypeController::class, 'showInventoryHistory'])
-        ->name('dashboard.inventory.history');
+    Route::get('/dashboard/inventory-history', [MypeController::class, 'showInventoryHistory'])->name('dashboard.inventory.history');
 });
 
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
-
+// Rutas de login y registro para Mypes (negocios)
 Route::get('mype/login', [MypeAuthController::class, 'showLoginForm'])->name('mype.login');
 Route::post('mype/login', [MypeAuthController::class, 'login'])->name('mype.login.submit');
-// Rutas de registro
 Route::get('/mypes/register', [MypeController::class, 'create'])->name('mypes.register');
 Route::post('/mypes/register', [MypeController::class, 'store'])->name('mypes.store');
 
-require __DIR__.'/settings.php';
+// Rutas de usuarios (clientes) y autenticación general están en:
 require __DIR__.'/auth.php';
+
+// Rutas de configuración (si tienes settings)
+require __DIR__.'/settings.php';
