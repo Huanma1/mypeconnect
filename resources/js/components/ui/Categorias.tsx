@@ -15,7 +15,7 @@ export default function CategoryDrawer({
 }: CategoryDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
 
-  // Cerrar si se hace clic fuera
+  // Cerrar al hacer clic fuera del drawer
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
@@ -32,19 +32,23 @@ export default function CategoryDrawer({
     };
   }, [isOpen, onClose]);
 
+  if (!isOpen) return null;
+
   return (
     <>
-      {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
-      )}
+      {/* Fondo transparente + blur */}
+      <div className="fixed inset-0 z-40 backdrop-blur-sm transition-opacity duration-300"></div>
 
+      {/* Drawer izquierdo */}
       <div
         ref={drawerRef}
-        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform z-50 transition-transform duration-300 ${
+        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="p-4 border-b font-bold text-lg">Categorías</div>
+        <div className="p-4 border-b font-bold text-lg">
+          Categorías
+        </div>
         <ul className="p-4 space-y-2">
           {categories.map((cat) => (
             <li
