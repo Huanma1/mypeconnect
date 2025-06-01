@@ -15,6 +15,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
       {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />}
 
+<<<<<<< HEAD
       <div style={styles.container}>
         <header style={styles.header}>
           <div style={styles.headerContent}>
@@ -41,6 +42,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             </nav>
           </div>
         </header>
+=======
+    const [productosBajoStock, setProductosBajoStock] = useState<Product[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+>>>>>>> arreglo-errores
 
         <main style={styles.main}>{children}</main>
       </div>
