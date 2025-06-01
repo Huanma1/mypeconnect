@@ -18,8 +18,6 @@ export default function Dashboard() {
     const { props } = usePage<{ auth: { user: { id: number } } }>();
     const mypeId = props.auth.user?.id;
 
-    console.log('MYPE ID:', mypeId);
-
     const [productosBajoStock, setProductosBajoStock] = useState<Product[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);

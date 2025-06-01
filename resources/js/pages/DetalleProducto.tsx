@@ -1,9 +1,9 @@
 import { Product } from '@/types';
 import { Link } from '@inertiajs/react';
-import Layout from '@/components/MainLayout'; 
+import Layout from '@/components/MainLayout';
 
 interface Props {
-    product: Product;
+    product: Product | null; // Permitimos que product sea null
 }
 
 export default function DetalleProducto({ product }: Props) {
@@ -28,13 +28,13 @@ export default function DetalleProducto({ product }: Props) {
                 {/* Lista de tiendas (MYPES) */}
                 <div className="bg-white p-4 rounded shadow">
                     <h2 className="text-xl font-semibold mb-4">Tiendas que venden este producto</h2>
-                    {product.mypes?.length > 0 ? (
+                    {product.mypes && product.mypes.length > 0 ? ( // Verificamos que `mypes` esté definido y tenga elementos
                         <ul className="space-y-2">
                             {product.mypes.map((mype) => (
                                 <li key={mype.id} className="border p-2 rounded">
                                     <p><strong>{mype.name}</strong></p>
-                                    <p>Precio: ${mype.pivot?.custom_price || 'N/A'}</p>
-                                    <p>Stock: {mype.pivot?.stock || 'N/A'}</p>
+                                    <p>Precio: ${mype.pivot?.custom_price ?? 'N/A'}</p>
+                                    <p>Calificacion: {mype.pivot?.product_rate ?? 'N/A'}</p>
                                 </li>
                             ))}
                         </ul>
