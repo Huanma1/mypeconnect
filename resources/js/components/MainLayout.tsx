@@ -1,14 +1,38 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 import React, { useState } from 'react';
 import type { Mype } from '@/types';
 import LoginModal from '@/pages/Login';
 import RegisterModal from '@/pages/Register';
-import Loading from '@/components/Loading'; 
+import Loading from '@/components/Loading';
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
-  const { auth } = usePage<{ auth: { user: Mype | null } }>().props;
+interface Props {
+  children: React.ReactNode;
+  categories?: string[]; // <- nueva prop
+}
+
+export default function MainLayout({ children, categories = [] }: Props) {
+  const { auth, filters } = usePage<{
+    auth: { user: Mype | null };
+    filters?: {
+      category?: string;
+      min_price?: string;
+      max_price?: string;
+    };
+  }>().props;
+
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+
+  const handleSelectCategory = (cat: string) => {
+    router.get('/products', {
+      category: cat,
+      min_price: filters?.min_price ?? '',
+      max_price: filters?.max_price ?? '',
+    }, {
+      preserveState: false,
+      preserveScroll: true,
+    });
+  };
 
   return (
     <Loading>
@@ -21,6 +45,19 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <Link href={route('home')} style={{ display: 'inline-block' }}>
               <img src="/logo completo.png" alt="Mype Connect" style={styles.logo} />
             </Link>
+
+            {/* Categorías */}
+            <div style={styles.categories}>
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => handleSelectCategory(cat)}
+                  style={styles.categoryButton}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
 
             <nav style={styles.nav}>
               {auth?.user ? (
@@ -63,6 +100,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
   logo: {
     height: '40px',
@@ -89,5 +127,21 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   main: {
     padding: '1.5rem',
+  },
+  categories: {
+    display: 'flex',
+    gap: '0.5rem',
+    flexWrap: 'wrap',
+    marginLeft: '2rem',
+    marginRight: 'auto',
+  },
+  categoryButton: {
+    background: 'transparent',
+    border: '1px solid white',
+    color: 'white',
+    padding: '0.25rem 0.5rem',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '0.875rem',
   },
 };

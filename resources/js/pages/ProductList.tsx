@@ -2,6 +2,7 @@ import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { Product, Paginated } from '@/types';
 import MainLayout from '@/components/MainLayout';
+import CategoryDrawer from '@/components/ui/Categorias';
 
 interface Props {
     products: Paginated<Product>;
@@ -18,26 +19,36 @@ export default function ProductList({ products, filters, categories }: Props) {
     const [minPrice, setMinPrice] = useState(filters?.min_price || '');
     const [maxPrice, setMaxPrice] = useState(filters?.max_price || '');
 
-    const handleFilter = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+    const handleFilter = () => {
         router.get('/products', {
             category,
             min_price: minPrice,
             max_price: maxPrice,
         }, {
-            preserveState: false, // Forzar la recarga de los props compartidos
-            preserveScroll: true, // Mantener la posición de desplazamiento
+            preserveState: false,
+            preserveScroll: true,
+        });
+    };
+
+    const handleSelectCategory = (cat: string) => {
+        setCategory(cat);
+        router.get('/products', {
+            category: cat,
+            min_price: minPrice,
+            max_price: maxPrice,
+        }, {
+            preserveState: false,
+            preserveScroll: true,
         });
     };
 
     const clearFilters = () => {
-        // Restablece los valores de los filtros
         setCategory('');
         setMinPrice('');
         setMaxPrice('');
 
-        // Navega a la ruta sin filtros
         router.get('/products', {}, {
             preserveState: false,
             preserveScroll: true,
@@ -47,23 +58,25 @@ export default function ProductList({ products, filters, categories }: Props) {
     return (
         <MainLayout>
             <div className="py-8">
-                <h1 className="text-3xl font-bold mb-6">Productos Disponibles</h1>
-
-                {/* Filtros */}
-                <div className="mb-8 grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-                    {/* Categoría */}
-                    <select
-                        value={category}
-                        onChange={e => setCategory(e.target.value)}
-                        className="p-2 border rounded w-full"
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-3xl font-bold">Productos Disponibles</h1>
+                    <button
+                        onClick={() => setIsDrawerOpen(true)}
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
                     >
-                        <option value="">Todas las categorías</option>
-                        {categories?.map((cat) => (
-                            <option key={cat} value={cat}>{cat}</option>
-                        ))}
-                    </select>
+                        ☰ Categorías
+                    </button>
+                </div>
 
-                    {/* Precio mínimo */}
+                <CategoryDrawer
+                    isOpen={isDrawerOpen}
+                    onClose={() => setIsDrawerOpen(false)}
+                    categories={categories}
+                    onSelectCategory={handleSelectCategory}
+                />
+
+                {/* Filtros restantes (precio, aplicar, quitar) */}
+                <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                     <input
                         type="number"
                         placeholder="Precio mínimo"
@@ -72,7 +85,6 @@ export default function ProductList({ products, filters, categories }: Props) {
                         className="p-2 border rounded w-full"
                     />
 
-                    {/* Precio máximo */}
                     <input
                         type="number"
                         placeholder="Precio máximo"
@@ -81,19 +93,17 @@ export default function ProductList({ products, filters, categories }: Props) {
                         className="p-2 border rounded w-full"
                     />
 
-                    {/* Botón Aplicar */}
                     <button
                         type="button"
                         onClick={handleFilter}
-                        className="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600 transition w-full"
+                        className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition w-full"
                     >
                         Aplicar
                     </button>
 
-                    {/* Botón Quitar */}
                     <button
                         onClick={clearFilters}
-                        className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 transition w-full"
+                        className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition w-full"
                     >
                         Quitar
                     </button>
@@ -108,7 +118,7 @@ export default function ProductList({ products, filters, categories }: Props) {
                             return (
                                 <Link
                                     key={product.id}
-                                    href={`/products/${product.id}`} // Ruta al detalle del producto
+                                    href={`/products/${product.id}`}
                                     className="bg-white p-4 rounded shadow hover:shadow-lg transition-all"
                                 >
                                     <h2 className="text-lg font-semibold">{product.product_name}</h2>
