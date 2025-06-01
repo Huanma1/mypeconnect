@@ -7,12 +7,11 @@ export default function Welcome() {
         products: Paginated<Product>; 
         categories: string[]; 
     }>().props;
+    
 
     return (
         <>
-            <Head title="Inicio">
-
-            </Head>
+            <Head title="Mype Connect" />
             <div>
                 
             </div>
