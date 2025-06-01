@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import type { Mype } from '@/types';
 import LoginModal from '@/pages/Login';
 import RegisterModal from '@/pages/Register';
+import Loading from '@/components/Loading'; 
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { auth } = usePage<{ auth: { user: Mype | null } }>().props;
@@ -10,7 +11,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const [showRegister, setShowRegister] = useState(false);
 
   return (
-    <>
+    <Loading>
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
       {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />}
 
@@ -43,7 +44,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
         <main style={styles.main}>{children}</main>
       </div>
-    </>
+    </Loading>
   );
 }
 
