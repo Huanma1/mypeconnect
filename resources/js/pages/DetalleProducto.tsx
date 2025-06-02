@@ -1,12 +1,14 @@
 import { Product } from '@/types';
 import { Link } from '@inertiajs/react';
 import Layout from '@/components/MainLayout';
+import { useState } from 'react';
 
 interface Props {
     product: Product | null; // Permitimos que product sea null
 }
 
 export default function DetalleProducto({ product }: Props) {
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     if (!product) {
         return (
             <Layout>
@@ -14,6 +16,14 @@ export default function DetalleProducto({ product }: Props) {
             </Layout>
         );
     }
+
+    // Ordenar las tiendas (MYPES) según el precio
+    const sortedMypes = [...(product.mypes || [])].sort((a, b) => {
+        const priceA = a.pivot?.custom_price || 0;
+        const priceB = b.pivot?.custom_price || 0;
+
+        return sortOrder === 'asc' ? priceA - priceB : priceB - priceA;
+    });
 
     return (
         <Layout>
@@ -28,13 +38,30 @@ export default function DetalleProducto({ product }: Props) {
                 {/* Lista de tiendas (MYPES) */}
                 <div className="bg-white p-4 rounded shadow">
                     <h2 className="text-xl font-semibold mb-4">Tiendas que venden este producto</h2>
-                    {product.mypes && product.mypes.length > 0 ? ( // Verificamos que `mypes` esté definido y tenga elementos
+
+                    {/* Botones para ordenar */}
+                    <div className="flex justify-between mb-4">
+                        <button
+                            onClick={() => setSortOrder('asc')}
+                            className={`px-4 py-2 rounded ${sortOrder === 'asc' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                        >
+                            Precio: Menor a Mayor
+                        </button>
+                        <button
+                            onClick={() => setSortOrder('desc')}
+                            className={`px-4 py-2 rounded ${sortOrder === 'desc' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                        >
+                            Precio: Mayor a Menor
+                        </button>
+                    </div>
+
+                    {sortedMypes.length > 0 ? (
                         <ul className="space-y-2">
-                            {product.mypes.map((mype) => (
+                            {sortedMypes.map((mype) => (
                                 <li key={mype.id} className="border p-2 rounded">
                                     <p><strong>{mype.name}</strong></p>
                                     <p>Precio: ${mype.pivot?.custom_price ?? 'N/A'}</p>
-                                    <p>Calificacion: {mype.pivot?.product_rate ?? 'N/A'}</p>
+                                    <p>Calificación: {mype.pivot?.product_rate ?? 'N/A'}</p>
                                 </li>
                             ))}
                         </ul>
