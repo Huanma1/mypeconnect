@@ -4,6 +4,9 @@ import { Product, Paginated } from '@/types';
 import MainLayout from '@/components/MainLayout';
 import CategoryDrawer from '@/components/ui/Categorias';
 
+import Cart from '@/components/Cart';
+import { useCart } from '@/context/CartContext';
+
 interface Props {
     products: Paginated<Product>;
     filters: {
@@ -20,6 +23,9 @@ export default function ProductList({ products, filters, categories }: Props) {
     const [maxPrice, setMaxPrice] = useState(filters?.max_price || '');
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isCartVisible, setIsCartVisible] = useState(false);
+
+     const { addToCart } = useCart();
 
     const handleFilter = () => {
         router.get('/products', {
@@ -60,6 +66,15 @@ export default function ProductList({ products, filters, categories }: Props) {
             <div className="py-8">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold">Productos Disponibles</h1>
+
+                    {/* Botón para mostrar el carrito */}
+                    <button
+                        onClick={() => setIsCartVisible(!isCartVisible)}
+                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+                    >
+                        🛒 Ver Carrito
+                    </button>
+                    {/* Botón para mostrar las categorias */}
                     <button
                         onClick={() => setIsDrawerOpen(true)}
                         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
@@ -67,6 +82,12 @@ export default function ProductList({ products, filters, categories }: Props) {
                         ☰ Categorías
                     </button>
                 </div>
+
+                {/* Carrito lateral */}
+                {isCartVisible && (
+                    <Cart onClose={() => setIsCartVisible(false)} />
+                )}
+
 
                 <CategoryDrawer
                     isOpen={isDrawerOpen}
@@ -129,6 +150,12 @@ export default function ProductList({ products, filters, categories }: Props) {
                                     <p className="text-yellow-500">
                                         Calificación: {mype?.pivot?.product_rate ?? 'N/A'}
                                     </p>
+                                    <button
+                                    className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                                    onClick={() => addToCart(product)}
+                                >
+                                    Agregar al carrito
+                                </button>
                                 </Link>
                             );
                         })
