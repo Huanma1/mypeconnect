@@ -22,6 +22,7 @@ export default function MainLayout({ children, categories = [] }: Props) {
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [loginType, setLoginType] = useState<'user' | 'mype' | null>(null); 
 
   const handleSelectCategory = (cat: string) => {
     router.get('/products', {
@@ -34,9 +35,48 @@ export default function MainLayout({ children, categories = [] }: Props) {
     });
   };
 
+  const handleLoginClick = () => {
+    setLoginType(null); 
+    setShowLogin(true); 
+  };
+
   return (
     <Loading>
-      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+      {showLogin && (
+        loginType === null ? (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-96 relative shadow-xl">
+              <button
+                onClick={() => setShowLogin(false)}
+                className="absolute top-2 right-3 text-gray-600 hover:text-black text-2xl font-bold"
+              >
+                &times;
+              </button>
+              <h2 className="text-2xl font-semibold mb-4">Selecciona el tipo de inicio de sesión</h2>
+              <div className="flex justify-center gap-6">
+                <button
+                  onClick={() => setLoginType('user')}
+                  className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600"
+                >
+                  Soy Cliente
+                </button>
+                <button
+                  onClick={() => setLoginType('mype')}
+                  className="bg-green-500 text-white px-6 py-3 rounded hover:bg-green-600"
+                >
+                  Soy MYPE
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <LoginModal
+            onClose={() => setShowLogin(false)}
+            userType={loginType!} 
+          />
+        )
+      )}
+
       {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />}
 
       <div style={styles.container}>
@@ -46,7 +86,6 @@ export default function MainLayout({ children, categories = [] }: Props) {
               <img src="/logo completo.png" alt="Mype Connect" style={styles.logo} />
             </Link>
 
-            {/* Categorías */}
             <div style={styles.categories}>
               {categories.map((cat) => (
                 <button
@@ -67,7 +106,7 @@ export default function MainLayout({ children, categories = [] }: Props) {
                 </>
               ) : (
                 <>
-                  <button onClick={() => setShowLogin(true)} style={styles.linkButton}>
+                  <button onClick={handleLoginClick} style={styles.linkButton}>
                     Log in
                   </button>
                   <button onClick={() => setShowRegister(true)} style={styles.linkButton}>

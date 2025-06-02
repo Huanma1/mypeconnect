@@ -3,9 +3,10 @@ import { useForm } from '@inertiajs/react';
 
 interface LoginModalProps {
   onClose: () => void;
+  userType: 'user' | 'mype'; 
 }
 
-export default function LoginModal({ onClose }: LoginModalProps) {
+export default function LoginModal({ onClose , userType }: LoginModalProps) {
   const { data, setData, post, processing, errors } = useForm({
     email: '',
     password: '',
@@ -13,7 +14,8 @@ export default function LoginModal({ onClose }: LoginModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    post('/mype/login', {
+    const loginRoute = userType === 'user' ? '/user/login' : '/mype/login'; // Define la ruta según el tipo de usuario
+    post(loginRoute, {
       onSuccess: () => onClose(),
     });
   };
@@ -28,7 +30,10 @@ export default function LoginModal({ onClose }: LoginModalProps) {
           &times;
         </button>
 
-        <h2 className="text-2xl font-semibold mb-4">Iniciar Sesión</h2>
+        {/* Título dinámico */}
+        <h2 className="text-2xl font-semibold mb-4">
+          {userType === 'user' ? 'Iniciar Sesión - Cliente' : 'Iniciar Sesión - MYPE'}
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
