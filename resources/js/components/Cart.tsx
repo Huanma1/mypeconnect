@@ -1,20 +1,35 @@
 import { useCart } from '@/context/CartContext';
+import { useEffect, useRef } from 'react';
 import { Product } from '@/types';
 
 const Cart = ({ onClose }: { onClose: () => void }) => {
   const { cart, removeFromCart, clearCart } = useCart();
+  const cartRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
 
   const calculateTotal = () => {
-  return cart.reduce((total, item) => {
-    const price = item.mypes?.[0]?.pivot?.custom_price || 0; // Accede al precio desde el primer Mype
-    return total + price * item.quantity;
-  }, 0);
-};
+    return cart.reduce((total, item) => {
+      const price = item.mypes?.[0]?.pivot?.custom_price || 0;
+      return total + price * item.quantity;
+    }, 0);
+  };
+
   return (
-    <div className="fixed top-0 right-0 w-1/3 h-full bg-white shadow-lg p-6 z-50">
+    <div
+      ref={cartRef}
+      className="fixed top-0 right-0 w-1/3 h-full bg-white shadow-lg p-6 z-50"
+    >
       <h2 className="text-2xl font-bold mb-4">🛒 Bolsa de compras</h2>
 
-      {/* Lista de productos */}
       <ul className="space-y-4">
         {cart.map((item) => (
           <li key={item.id} className="flex items-center justify-between">
@@ -35,7 +50,6 @@ const Cart = ({ onClose }: { onClose: () => void }) => {
         ))}
       </ul>
 
-      {/* Subtotal */}
       <div className="mt-6 border-t pt-4">
         <p className="text-lg font-semibold">
           Total Productos: {cart.length}
@@ -45,7 +59,6 @@ const Cart = ({ onClose }: { onClose: () => void }) => {
         </p>
       </div>
 
-      {/* Botones */}
       <div className="mt-6 flex justify-between">
         <button
           onClick={onClose}
