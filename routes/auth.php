@@ -58,7 +58,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Rutas para Mypes autenticadas
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth:mype'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');

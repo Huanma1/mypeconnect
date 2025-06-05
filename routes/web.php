@@ -22,14 +22,25 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('products
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
 // Rutas protegidas para Mypes (negocios)
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth:mype'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+        $mype = Auth::guard('mype')->user();
+
+        if (! $mype) {
+            return redirect()->route('mype.login');
+        }
+
+        return Inertia::render('Dashboard', [
+            'mypeId' => $mype->id,
+        ]);
     })->name('dashboard');
 
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'mype'])->name('products.mype');
+
     Route::get('/dashboard/products', [ProductController::class, 'listProductsWithStock'])->name('dashboard.products.list');
     Route::post('/dashboard/products/{productId}/update-stock-and-price', [StockController::class, 'updateStockAndPrice'])->name('dashboard.products.updateStockAndPrice');
+
     Route::get('/mype/{mypeId}/bajo-stock', [MypeProductController::class, 'bajoStockPorMype']);
     Route::get('/dashboard/inventory-history', [MypeController::class, 'showInventoryHistory'])->name('dashboard.inventory.history');
 });
