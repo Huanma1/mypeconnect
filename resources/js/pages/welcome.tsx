@@ -1,6 +1,7 @@
 import { Head, usePage } from '@inertiajs/react';
 import { Product, Paginated } from '@/types';
 import ProductList from '@/pages/ProductList';
+import MainLayout from '@/components/MainLayout';
 
 export default function Welcome() {
     const { products, categories } = usePage<{ 

@@ -22,17 +22,9 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('products
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
 // Rutas protegidas para Mypes (negocios)
-Route::middleware(['auth:mype'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
-        $mype = Auth::guard('mype')->user();
-
-        if (! $mype) {
-            return redirect()->route('mype.login');
-        }
-
-        return Inertia::render('Dashboard', [
-            'mypeId' => $mype->id,
-        ]);
+        return Inertia::render('dashboard');
     })->name('dashboard');
 
     Route::post('/products', [ProductController::class, 'mype'])->name('products.mype');
@@ -42,10 +34,6 @@ Route::middleware(['auth:mype'])->group(function () {
     Route::get('/dashboard/inventory-history', [MypeController::class, 'showInventoryHistory'])->name('dashboard.inventory.history');
 });
 
-/// Ruta para seleccionar entre cliente o MYPE
-Route::get('/auth/select', function () {
-    return Inertia::render('auth/selectAuth'); // Renderiza el componente SelectLogin
-})->name('auth.select');
 
 // Rutas para usuarios (clientes)
 Route::get('/user/login', [AuthenticatedSessionController::class, 'create'])->name('user.login');

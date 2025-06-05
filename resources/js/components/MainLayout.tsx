@@ -1,6 +1,6 @@
 import { Link, usePage, router } from '@inertiajs/react';
 import React, { useState } from 'react';
-import type { Mype } from '@/types';
+import type { Mype, User } from '@/types';
 import LoginModal from '@/pages/Login';
 import RegisterModal from '@/pages/Register';
 import UserRegister from '@/pages/UserRegister';
@@ -8,12 +8,15 @@ import Loading from '@/components/Loading';
 
 interface Props {
   children: React.ReactNode;
-  categories?: string[]; // <- nueva prop
+  categories?: string[];
 }
 
 export default function MainLayout({ children, categories = [] }: Props) {
   const { auth, filters } = usePage<{
-    auth: { user: Mype | null };
+    auth: { 
+      user: Mype | User | null 
+      type: 'mype' | 'user' | null
+    };
     filters?: {
       category?: string;
       min_price?: string;
@@ -23,7 +26,7 @@ export default function MainLayout({ children, categories = [] }: Props) {
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const [loginType, setLoginType] = useState<'user' | 'mype' | null>(null); 
+  const [loginType, setLoginType] = useState<'user' | 'mype' | null>(null);
   const [registerType, setRegisterType] = useState<'user' | 'mype' | null>(null);
 
   const handleSelectCategory = (cat: string) => {
@@ -47,6 +50,7 @@ export default function MainLayout({ children, categories = [] }: Props) {
     setShowRegister(true);
   };
 
+  console.log('auth.user in MainLayout:', auth.user); // Depuración
 
   return (
     <Loading>
@@ -80,7 +84,7 @@ export default function MainLayout({ children, categories = [] }: Props) {
         ) : (
           <LoginModal
             onClose={() => setShowLogin(false)}
-            userType={loginType!} 
+            userType={loginType!}
           />
         )
       )}
@@ -128,34 +132,26 @@ export default function MainLayout({ children, categories = [] }: Props) {
               <img src="/logo completo.png" alt="Mype Connect" style={styles.logo} />
             </Link>
 
-            <div style={styles.categories}>
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => handleSelectCategory(cat)}
-                  style={styles.categoryButton}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
             <nav style={styles.nav}>
-              {auth?.user ? (
-                <>
-                  <span style={styles.navText}>Bienvenido, {auth.user.name}</span>
-                  <Link href={route('dashboard')} style={styles.link}>Dashboard</Link>
-                </>
-              ) : (
-                <>
-                  <button onClick={handleLoginClick} style={styles.linkButton}>
-                    Log in
-                  </button>
-                  <button onClick={() => setShowRegister(true)} style={styles.linkButton}>
-                    Register
-                  </button>
-                </>
-              )}
+              {auth.user ? (
+              <>
+                <span style={styles.navText}>
+                  Bienvenido, {auth.user.name || 'Usuario desconocido'} ({auth.type})
+                </span>
+                <Link href={route('dashboard')} style={styles.link}>
+                  Dashboard
+                </Link>
+              </>
+            ) : (
+              <>
+                <button onClick={handleLoginClick} style={styles.linkButton}>
+                  Log in
+                </button>
+                <button onClick={() => setShowRegister(true)} style={styles.linkButton}>
+                  Register
+                </button>
+              </>
+            )}
             </nav>
           </div>
         </header>
@@ -208,21 +204,5 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   main: {
     padding: '1.5rem',
-  },
-  categories: {
-    display: 'flex',
-    gap: '0.5rem',
-    flexWrap: 'wrap',
-    marginLeft: '2rem',
-    marginRight: 'auto',
-  },
-  categoryButton: {
-    background: 'transparent',
-    border: '1px solid white',
-    color: 'white',
-    padding: '0.25rem 0.5rem',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    fontSize: '0.875rem',
   },
 };

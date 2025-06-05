@@ -16,8 +16,10 @@ export default function LoginModal({ onClose , userType }: LoginModalProps) {
     e.preventDefault();
     const loginRoute = userType === 'user' ? '/user/login' : '/mype/login'; // Define la ruta según el tipo de usuario
     post(loginRoute, {
-      onSuccess: () => onClose(),
-    });
+    onSuccess: () => {
+    window.location.reload(); // 🔁 Forzamos recarga completa para rehidratar props
+  },
+});
   };
 
   return (
