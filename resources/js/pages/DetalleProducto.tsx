@@ -1,17 +1,34 @@
 import { Product } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import Layout from '@/components/MainLayout';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 
 interface Props {
-    product: Product | null; // Permitimos que product sea null
+    product: Product & {
+        comments: {
+            id: number;
+            comment: string;
+            user: { name: string };
+        }[];
+    };
 }
 
-
 export default function DetalleProducto({ product }: Props) {
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Estado para el orden
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const { addToCart } = useCart();
+
+    const { data, setData, post, reset, processing } = useForm({
+        comment: '',
+        product_id: product.id,
+    });
+
+    const handleAddComment = (e: React.FormEvent) => {
+        e.preventDefault();
+        post(route('comments.store'), {
+            onSuccess: () => reset('comment'),
+        });
+    };
 
     if (!product) {
         return (
@@ -21,7 +38,6 @@ export default function DetalleProducto({ product }: Props) {
         );
     }
 
-    // Ordenar las tiendas (MYPES) según el precio
     const sortedMypes = [...(product.mypes || [])].sort((a, b) => {
         const priceA = a.pivot?.custom_price || 0;
         const priceB = b.pivot?.custom_price || 0;
@@ -32,18 +48,53 @@ export default function DetalleProducto({ product }: Props) {
     return (
         <Layout>
             <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Detalles del producto */}
+                {/* Columna izquierda: detalles del producto */}
                 <div className="md:col-span-2">
                     <h1 className="text-3xl font-bold">{product.product_name}</h1>
                     <p className="text-gray-700 mt-2">{product.product_description}</p>
                     <p className="mt-4 text-sm text-gray-500">Categoría: {product.category || 'Sin categoría'}</p>
+
+                    {/* Caja de comentarios */}
+                    <div className="mt-6">
+                        <h2 className="text-xl font-semibold mb-4">Comentarios sobre el producto</h2>
+
+                        {/* Lista de comentarios */}
+                        {product.comments.length > 0 ? (
+                            <ul>
+                                {product.comments.map((cmt) => (
+                                    <li key={cmt.id}>
+                                        <strong>{cmt.user.name}:</strong> {cmt.comment}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No hay comentarios aún.</p>
+                        )}
+
+                        {/* Formulario de nuevo comentario */}
+                        <form onSubmit={handleAddComment} className="space-y-2">
+                            <textarea
+                                className="w-full p-2 border rounded"
+                                placeholder="Escribe tu comentario aquí..."
+                                value={data.comment}
+                                onChange={(e) => setData('comment', e.target.value)}
+                            />
+                            <button
+                                type="submit"
+                                disabled={processing}
+                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                            >
+                                Enviar comentario
+                            </button>
+                        </form>
+                    </div>
                 </div>
 
-                {/* Lista de tiendas (MYPES) */}
+                {/* Columna derecha: tiendas (mypes) */}
                 <div className="bg-white p-4 rounded shadow">
                     <h2 className="text-xl font-semibold mb-4">Tiendas que venden este producto</h2>
 
-                    {/* Botones para ordenar */}
+                    {/* Ordenar */}
                     <div className="flex justify-between mb-4">
                         <button
                             onClick={() => setSortOrder('asc')}
@@ -66,26 +117,24 @@ export default function DetalleProducto({ product }: Props) {
                                     <p><strong>{mype.name}</strong></p>
                                     <p>Precio: ${mype.pivot?.custom_price ?? 'N/A'}</p>
                                     <p>Calificación: {mype.pivot?.product_rate ?? 'N/A'}</p>
-                                     
-                                    <div>
-                                        <button
-                                            className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                addToCart({
-                                                    id: product.id, 
-                                                    mypeId: mype.id, 
-                                                    name: product.product_name, 
-                                                    description: product.product_description, 
-                                                    price: mype.pivot?.custom_price || 0, 
-                                                    quantity: 1, 
-                                                    mypeName: mype.name,
-                                                });
-                                            }}
-                                        >
-                                            Agregar al carrito
-                                        </button>
-                                    </div>
+
+                                    <button
+                                        className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            addToCart({
+                                                id: product.id,
+                                                mypeId: mype.id,
+                                                name: product.product_name,
+                                                description: product.product_description,
+                                                price: mype.pivot?.custom_price || 0,
+                                                quantity: 1,
+                                                mypeName: mype.name,
+                                            });
+                                        }}
+                                    >
+                                        Agregar al carrito
+                                    </button>
                                 </li>
                             ))}
                         </ul>
@@ -94,7 +143,7 @@ export default function DetalleProducto({ product }: Props) {
                     )}
                 </div>
 
-                {/* Botón de volver a inicio */}
+                {/* Botón volver */}
                 <div className="mt-6">
                     <Link
                         href={route('home')}

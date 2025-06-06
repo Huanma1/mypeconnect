@@ -12,6 +12,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\WebpayController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\ProductCommentController;
 
 // Página de inicio (pública)
 Route::get('/', [WelcomeController::class, 'showWelcome'])->name('home');
@@ -45,6 +46,7 @@ Route::middleware(['auth:mype'])->group(function () {
     Route::get('/dashboard/inventory-history', [MypeController::class, 'showInventoryHistory'])->name('dashboard.inventory.history');
 });
 
+Route::post('/comments', [ProductCommentController::class, 'store'])->name('comments.store');
 
 // Rutas para usuarios (clientes)
 Route::get('/user/login', [AuthenticatedSessionController::class, 'create'])->name('user.login');

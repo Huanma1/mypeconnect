@@ -31,4 +31,8 @@ class Product extends Model
 
         return $relation;
     }
+    public function comments()
+    {
+        return $this->hasMany(ProductComment::class);
+    }
 }
