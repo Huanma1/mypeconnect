@@ -97,24 +97,7 @@ export default function ProductList({ products, filters, categories }: Props) {
     return (
         <MainLayout>
             <div className="py-8">
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold">Productos Disponibles</h1>
-
-                    {/* Botón para mostrar el carrito */}
-                    <button
-                        onClick={() => setIsCartVisible(!isCartVisible)}
-                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-                    >
-                        🛒 Ver Carrito
-                    </button>
-                    {/* Botón para mostrar las categorias */}
-                    <button
-                        onClick={() => setIsDrawerOpen(true)}
-                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-                    >
-                        ☰ Categorías
-                    </button>
-                </div>
+                
 
                 {/* Carrito lateral */}
                 {isCartVisible && (
