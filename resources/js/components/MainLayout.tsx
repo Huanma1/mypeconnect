@@ -30,6 +30,8 @@ export default function MainLayout({ children, categories = [] }: Props) {
   const [showRegister, setShowRegister] = useState(false);
   const [loginType, setLoginType] = useState<'user' | 'mype' | null>(null);
   const [registerType, setRegisterType] = useState<'user' | 'mype' | null>(null);
+  const [showCart, setShowCart] = useState(false);
+  const [showCategoriesDrawer, setShowCategoriesDrawer] = useState(false);
 
   const handleSelectCategory = (cat: string) => {
     router.get(
@@ -122,37 +124,83 @@ export default function MainLayout({ children, categories = [] }: Props) {
           <RegisterModal onClose={() => setShowRegister(false)} />
         ))}
 
+      {showCategoriesDrawer && (
+        <CategoryDrawer
+          isOpen={showCategoriesDrawer}
+          onClose={() => setShowCategoriesDrawer(false)}
+          categories={categories}
+          onSelectCategory={(cat) => {
+            handleSelectCategory(cat);
+            setShowCategoriesDrawer(false);
+          }}
+        />
+      )}
+
+      {showCart && <Cart onClose={() => setShowCart(false)} />}
+
       <div style={styles.container}>
         <header style={styles.header}>
           <div style={styles.headerContent}>
-            {/* Logo */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {/* Lado izquierdo: logo + categorías */}
+            <div style={styles.leftSection}>
               <Link href={route('home')} style={{ display: 'inline-block' }}>
                 <img src="/logo completo.png" alt="Mype Connect" style={styles.logo} />
               </Link>
-            </div> {}
 
-            <nav style={styles.nav}>
-              {auth.user ? (
-                <>
-                  <span style={styles.navText}>
-                    Bienvenido, {auth.user.name || 'Usuario desconocido'} ({auth.type})
-                  </span>
-                  <Link href={route('dashboard')} style={styles.link}>
-                    Dashboard
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <button onClick={handleLoginClick} style={styles.linkButton}>
-                    Log in
-                  </button>
-                  <button onClick={() => setShowRegister(true)} style={styles.linkButton}>
-                    Register
-                  </button>
-                </>
-              )}
-            </nav>
+              <button
+                onClick={() => setShowCategoriesDrawer(true)}
+                style={styles.outlinedButton}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  width={20}
+                  height={20}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+                <span style={{ marginLeft: 6 }}>Categorías</span>
+              </button>
+            </div>
+
+            {/* Lado derecho: navegación + carrito */}
+            <div style={styles.rightSection}>
+              <nav style={styles.nav}>
+                {auth.user ? (
+                  <>
+                    <span style={styles.navText}>
+                      Bienvenido, {auth.user.name || 'Usuario desconocido'} ({auth.type})
+                    </span>
+                    <Link href={route('dashboard')} style={styles.link}>
+                      Dashboard
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={handleLoginClick} style={styles.linkButton}>
+                      Log in
+                    </button>
+                    <button onClick={handleRegisterClick} style={styles.linkButton}>
+                      Register
+                    </button>
+                  </>
+                )}
+              </nav>
+
+              <button
+                onClick={() => setShowCart(true)}
+                style={styles.outlinedButton}
+              >
+                🛒 <span style={{ marginLeft: 6 }}>Ver Carrito</span>
+              </button>
+            </div>
           </div>
         </header>
 
@@ -178,6 +226,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: 'space-between',
     alignItems: 'center',
     flexWrap: 'wrap',
+    gap: '1rem',
+  },
+  leftSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+  },
+  rightSection: {
+    display: 'flex',
+    alignItems: 'center',
     gap: '1rem',
   },
   logo: {
