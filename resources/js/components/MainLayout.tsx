@@ -1,8 +1,9 @@
 import { Link, usePage, router } from '@inertiajs/react';
 import React, { useState } from 'react';
-import type { Mype } from '@/types';
+import type { Mype, User } from '@/types';
 import LoginModal from '@/pages/Login';
 import RegisterModal from '@/pages/Register';
+import UserRegister from '@/pages/UserRegister';
 import Loading from '@/components/Loading';
 import CategoryDrawer from '@/components/ui/Categorias';
 import Cart from '@/components/Cart';
@@ -14,7 +15,10 @@ interface Props {
 
 export default function MainLayout({ children, categories = [] }: Props) {
   const { auth, filters } = usePage<{
-    auth: { user: Mype | null };
+    auth: {
+      user: Mype | User | null;
+      type: 'mype' | 'user' | null;
+    };
     filters?: {
       category?: string;
       min_price?: string;
@@ -24,8 +28,8 @@ export default function MainLayout({ children, categories = [] }: Props) {
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const [showCart, setShowCart] = useState(false);
-  const [showCategoriesDrawer, setShowCategoriesDrawer] = useState(false);
+  const [loginType, setLoginType] = useState<'user' | 'mype' | null>(null);
+  const [registerType, setRegisterType] = useState<'user' | 'mype' | null>(null);
 
   const handleSelectCategory = (cat: string) => {
     router.get(
@@ -42,22 +46,81 @@ export default function MainLayout({ children, categories = [] }: Props) {
     );
   };
 
+  const handleLoginClick = () => {
+    setLoginType(null);
+    setShowLogin(true);
+  };
+
+  const handleRegisterClick = () => {
+    setRegisterType(null);
+    setShowRegister(true);
+  };
+
   return (
     <Loading>
-      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
-      {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />}
-      {showCategoriesDrawer && (
-        <CategoryDrawer
-          isOpen={showCategoriesDrawer}
-          onClose={() => setShowCategoriesDrawer(false)}
-          categories={categories}
-          onSelectCategory={(cat) => {
-            handleSelectCategory(cat);
-            setShowCategoriesDrawer(false);
-          }}
-        />
-      )}
-      {showCart && <Cart onClose={() => setShowCart(false)} />}
+      {showLogin &&
+        (loginType === null ? (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-96 relative shadow-xl">
+              <button
+                onClick={() => setShowLogin(false)}
+                className="absolute top-2 right-3 text-gray-600 hover:text-black text-2xl font-bold"
+              >
+                &times;
+              </button>
+              <h2 className="text-2xl font-semibold mb-4">Selecciona el tipo de inicio de sesión</h2>
+              <div className="flex justify-center gap-6">
+                <button
+                  onClick={() => setLoginType('user')}
+                  className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600"
+                >
+                  Soy Cliente
+                </button>
+                <button
+                  onClick={() => setLoginType('mype')}
+                  className="bg-green-500 text-white px-6 py-3 rounded hover:bg-green-600"
+                >
+                  Soy MYPE
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <LoginModal onClose={() => setShowLogin(false)} userType={loginType!} />
+        ))}
+
+      {showRegister &&
+        (registerType === null ? (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-96 relative shadow-xl">
+              <button
+                onClick={() => setShowRegister(false)}
+                className="absolute top-2 right-3 text-gray-600 hover:text-black text-2xl font-bold"
+              >
+                &times;
+              </button>
+              <h2 className="text-2xl font-semibold mb-4">Selecciona el tipo de registro</h2>
+              <div className="flex justify-center gap-6">
+                <button
+                  onClick={() => setRegisterType('user')}
+                  className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600"
+                >
+                  Registrarme como Cliente
+                </button>
+                <button
+                  onClick={() => setRegisterType('mype')}
+                  className="bg-green-500 text-white px-6 py-3 rounded hover:bg-green-600"
+                >
+                  Registrarme como MYPE
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : registerType === 'user' ? (
+          <UserRegister onClose={() => setShowRegister(false)} />
+        ) : (
+          <RegisterModal onClose={() => setShowRegister(false)} />
+        ))}
 
       <div style={styles.container}>
         <header style={styles.header}>
@@ -67,43 +130,21 @@ export default function MainLayout({ children, categories = [] }: Props) {
               <Link href={route('home')} style={{ display: 'inline-block' }}>
                 <img src="/logo completo.png" alt="Mype Connect" style={styles.logo} />
               </Link>
+            </div> {}
 
-              {/* Botón Categorías con borde */}
-              <button
-                onClick={() => setShowCategoriesDrawer(true)}
-                style={styles.outlinedButton}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  width={20}
-                  height={20}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-                <span style={{ marginLeft: 6 }}>Categorías</span>
-              </button>
-            </div>
-
-            {/* Navegación y botón carrito */}
             <nav style={styles.nav}>
-              {auth?.user ? (
+              {auth.user ? (
                 <>
-                  <span style={styles.navText}>Bienvenido, {auth.user.name}</span>
+                  <span style={styles.navText}>
+                    Bienvenido, {auth.user.name || 'Usuario desconocido'} ({auth.type})
+                  </span>
                   <Link href={route('dashboard')} style={styles.link}>
                     Dashboard
                   </Link>
                 </>
               ) : (
                 <>
-                  <button onClick={() => setShowLogin(true)} style={styles.linkButton}>
+                  <button onClick={handleLoginClick} style={styles.linkButton}>
                     Log in
                   </button>
                   <button onClick={() => setShowRegister(true)} style={styles.linkButton}>
@@ -111,14 +152,6 @@ export default function MainLayout({ children, categories = [] }: Props) {
                   </button>
                 </>
               )}
-
-              {/* Botón Ver Carrito con borde */}
-              <button
-                onClick={() => setShowCart(true)}
-                style={styles.outlinedButton}
-              >
-                🛒 <span style={{ marginLeft: 6 }}>Ver Carrito</span>
-              </button>
             </nav>
           </div>
         </header>

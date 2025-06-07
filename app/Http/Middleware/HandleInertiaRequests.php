@@ -6,6 +6,7 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
+use Illuminate\Support\Facades\Auth;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -37,30 +38,27 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        // Obtener el quote de manera segura y asegurar que sea una cadena de texto
-        $quote = Inspiring::quotes()->random();
+        return array_merge(parent::share($request), [
+            'auth' => function () {
+                if (Auth::guard('mype')->check()) {
+                    return [
+                        'user' => Auth::guard('mype')->user(),
+                        'type' => 'mype',
+                    ];
+                }
 
-        // Verificar si $quote es una cadena, y si no, convertirlo en una cadena vacía
-        $quote = is_string($quote) ? $quote : '';
+                if (Auth::guard('web')->check()) {
+                    return [
+                        'user' => Auth::guard('web')->user(),
+                        'type' => 'user',
+                    ];
+                }
 
-        // Dividir el quote en mensaje y autor
-        $quoteParts = explode('-', $quote);
-
-        // Asignar valores a mensaje y autor, con una verificación explícita para el autor
-        $message = trim($quoteParts[0]);
-        $author = isset($quoteParts[1]) ? trim($quoteParts[1]) : 'Autor no disponible';
-
-        // Retornar los datos compartidos con el tipo de retorno adecuado
-        return [
-            'name' => config('app.name'),
-            'quote' => ['message' => $message, 'author' => $author],
-            'auth' => [
-                'user' => $request->user('mype') ?: null,
-            ],
-            'ziggy' => fn (): array => [
-                ...(new Ziggy)->toArray(),
-                'location' => $request->url(),
-            ],
-        ];
+                return [
+                    'user' => null,
+                    'type' => null,
+                ];
+            },
+        ]);
     }
 }

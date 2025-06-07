@@ -52,8 +52,8 @@ class RegisteredUserController extends Controller
 
         // Iniciar sesión automáticamente
         Auth::login($user);
-
+        session()->flash('success', 'Usuario creado exitosamente.');
         // Redirigir al dashboard
-        return to_route('dashboard');
+        return to_route('home');
     }
 }

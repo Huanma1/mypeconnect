@@ -183,15 +183,6 @@ export default function ProductList({ products, filters, categories }: Props) {
                                     <p className="text-yellow-500">
                                         Calificación: {mype?.pivot?.product_rate ?? 'N/A'}
                                     </p>
-                                    <button
-                                        className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            addToCart(product);
-                                        }}
-                                    >
-                                        Agregar al carrito
-                                    </button>
                                 </Link>
                             );
                         })
