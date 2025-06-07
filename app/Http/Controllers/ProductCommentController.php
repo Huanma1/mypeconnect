@@ -11,28 +11,29 @@ class ProductCommentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'comment' => 'required|string|max:1000',
-            'product_id' => 'required|exists:products,id',
+            'product_id' => ['required', 'exists:products,id'],
+            'comment' => ['nullable', 'string'],
+            'rating' => ['required', 'integer', 'between:1,5'],
         ]);
 
-        $userId = Auth::id();
-        $productId = $request->product_id;
+        $user = Auth::user();
 
-        // Verificar si el usuario ya comentó este producto
-        $existingComment = ProductComment::where('user_id', $userId)
-            ->where('product_id', $productId)
+        // Solo permite un comentario por usuario por producto
+        $existing = ProductComment::where('user_id', $user->id)
+            ->where('product_id', $request->product_id)
             ->first();
 
-        if ($existingComment) {
-            return redirect()->back()->with('error', 'Ya has comentado este producto.');
+        if ($existing) {
+            return back()->withErrors(['message' => 'Ya has calificado este producto.']);
         }
 
         ProductComment::create([
-            'product_id' => $productId,
-            'user_id' => $userId,
+            'user_id' => $user->id,
+            'product_id' => $request->product_id,
             'comment' => $request->comment,
+            'rating' => $request->rating,
         ]);
 
-        return redirect()->back()->with('success', 'Comentario agregado correctamente.');
+        return back()->with('success', 'Comentario y calificación enviados correctamente.');
     }
 }

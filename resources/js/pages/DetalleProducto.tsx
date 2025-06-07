@@ -10,6 +10,7 @@ interface Props {
         comments: {
             id: number;
             comment: string;
+            rating: number; // ✅ AÑADIR ESTO
             user: { id: number; name: string };
         }[];
         mypes?: {
@@ -37,6 +38,7 @@ export default function DetalleProducto({ product }: Props) {
 
     const { data, setData, post, reset, processing } = useForm({
         comment: '',
+        rating: 5,
         product_id: product.id,
     });
 
@@ -76,6 +78,11 @@ export default function DetalleProducto({ product }: Props) {
                     <p className="mt-4 text-sm text-gray-500">
                         Categoría: {product.category || 'Sin categoría'}
                     </p>
+                    {product.comments.map((cmt) => (
+                        <li key={cmt.id} className="mb-2">
+                            Calificación: {cmt.rating} ⭐
+                        </li>
+                    ))}
 
                     {/* Comentarios */}
                     <div className="mt-6">
@@ -84,8 +91,9 @@ export default function DetalleProducto({ product }: Props) {
                         {product.comments.length > 0 ? (
                             <ul>
                                 {product.comments.map((cmt) => (
-                                    <li key={cmt.id}>
-                                        <strong>{cmt.user.name}:</strong> {cmt.comment}
+                                    <li key={cmt.id} className="mb-2">
+                                        <strong>{cmt.user.name}</strong>: {cmt.comment} <br />
+                                        Calificación: {cmt.rating} ⭐
                                     </li>
                                 ))}
                             </ul>
@@ -105,6 +113,20 @@ export default function DetalleProducto({ product }: Props) {
                                     value={data.comment}
                                     onChange={(e) => setData('comment', e.target.value)}
                                 />
+
+                                <div className="flex items-center space-x-2">
+                                    <label>Calificación:</label>
+                                    <select
+                                        value={data.rating}
+                                        onChange={(e) => setData('rating', parseInt(e.target.value))}
+                                        className="border p-1 rounded"
+                                    >
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <option key={star} value={star}>{star} estrella{star > 1 ? 's' : ''}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
                                 <button
                                     type="submit"
                                     disabled={processing}

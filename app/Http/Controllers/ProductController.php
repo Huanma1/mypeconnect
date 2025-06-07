@@ -106,7 +106,7 @@ class ProductController extends Controller
 
     public function show(int $id): InertiaResponse|RedirectResponse
     {
-        $product = Product::with(['mypes', 'comments.user'])->findOrFail($id);
+        $product = Product::with(['comments.user', 'mypes'])->findOrFail($id);
 
         if (!$product) {
             return redirect()->route('products.index')->with('error', 'Producto no encontrado.');
