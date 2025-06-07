@@ -7,10 +7,11 @@ import { useCart } from '@/context/CartContext';
 
 interface Props {
     product: Product & {
+        average_rating?: number;
         comments: {
             id: number;
             comment: string;
-            rating: number; // ✅ AÑADIR ESTO
+            rating: number;
             user: { id: number; name: string };
         }[];
         mypes?: {
@@ -78,12 +79,11 @@ export default function DetalleProducto({ product }: Props) {
                     <p className="mt-4 text-sm text-gray-500">
                         Categoría: {product.category || 'Sin categoría'}
                     </p>
-                    {product.comments.map((cmt) => (
-                        <li key={cmt.id} className="mb-2">
-                            Calificación: {cmt.rating} ⭐
-                        </li>
-                    ))}
-
+                    {product.average_rating !== undefined && (
+                        <div className="mt-4 text-lg font-semibold text-yellow-600">
+                            Calificación: {product.average_rating} ⭐
+                        </div>
+                    )}
                     {/* Comentarios */}
                     <div className="mt-6">
                         <h2 className="text-xl font-semibold mb-4">Comentarios sobre el producto</h2>

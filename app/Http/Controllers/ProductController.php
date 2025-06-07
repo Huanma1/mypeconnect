@@ -111,9 +111,10 @@ class ProductController extends Controller
         if (!$product) {
             return redirect()->route('products.index')->with('error', 'Producto no encontrado.');
         }
+        $averageRating = $product->comments()->avg('rating');
 
         return Inertia::render('DetalleProducto', [
-            'product' => $product,
+            'product' => $product->toArray() + ['average_rating' => round($averageRating, 1)],
         ]);
     }
 
