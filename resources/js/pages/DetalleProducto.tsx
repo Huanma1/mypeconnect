@@ -72,6 +72,7 @@ export default function DetalleProducto({ product }: Props) {
                         )}
 
                         {/* Formulario de nuevo comentario */}
+                        
                         <form onSubmit={handleAddComment} className="space-y-2">
                             <textarea
                                 className="w-full p-2 border rounded"

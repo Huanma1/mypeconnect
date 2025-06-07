@@ -11,16 +11,16 @@ class ProductCommentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'comment' => 'required|string|max:1000',
             'product_id' => 'required|exists:products,id',
+            'comment' => 'required|string|max:1000',
         ]);
 
         ProductComment::create([
+            'user_id' => Auth::id(),
             'product_id' => $request->product_id,
-            'user_id' => auth()->id(),
             'comment' => $request->comment,
         ]);
 
-        return redirect()->back();
+        return back()->with('success', 'Comentario agregado correctamente.');
     }
 }
