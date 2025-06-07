@@ -1,15 +1,22 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Product } from '@/types';
 
-export interface CartItem extends Product {
+export interface CartItem {
+  id: number;
+  mypeId: number;
+  name: string;
+  description: string;
+  price: number;
   quantity: number;
+  mypeName: string;
 }
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: Product) => void;
-  removeFromCart: (productId: number) => void;
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (productId: number, mypeId: number) => void;
   clearCart: () => void;
+  incrementQuantity: (productId: number, mypeId: number) => void; 
+  decrementQuantity: (productId: number, mypeId: number) => void; 
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -17,28 +24,52 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  const addToCart = (product: Product) => {
+  const addToCart = (item: CartItem) => {
     setCart((prev) => {
-      const found = prev.find((item) => item.id === product.id);
+    const found = prev.find(
+      (cartItem) => cartItem.id === item.id && cartItem.mypeId === item.mypeId
+    );
       if (found) {
-        return prev.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+        return prev.map((cartItem) =>
+        cartItem.id === item.id && cartItem.mypeId === item.mypeId
+          ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
+          : cartItem
+      );
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, item];
     });
   };
 
-  const removeFromCart = (productId: number) => {
-    setCart((prev) => prev.filter((item) => item.id !== productId));
+  const incrementQuantity = (productId: number, mypeId: number) => {
+    setCart((prev) =>
+      prev.map((item) =>
+        item.id === productId && item.mypeId === mypeId
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      )
+    );
+  };
+
+  const decrementQuantity = (productId: number, mypeId: number) => {
+    setCart((prev) =>
+      prev.map((item) =>
+        item.id === productId && item.mypeId === mypeId && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
+  };
+
+  const removeFromCart = (productId: number, mypeId: number) => {
+    setCart((prev) =>
+      prev.filter((item) => !(item.id === productId && item.mypeId === mypeId))
+    );
   };
 
   const clearCart = () => setCart([]);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, incrementQuantity, decrementQuantity }}>
       {children}
     </CartContext.Provider>
   );

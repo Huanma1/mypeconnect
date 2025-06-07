@@ -2,13 +2,17 @@ import { Product } from '@/types';
 import { Link } from '@inertiajs/react';
 import Layout from '@/components/MainLayout';
 import { useState } from 'react';
+import { useCart } from '@/context/CartContext';
 
 interface Props {
     product: Product | null; // Permitimos que product sea null
 }
 
+
 export default function DetalleProducto({ product }: Props) {
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Estado para el orden
+    const { addToCart } = useCart();
+
     if (!product) {
         return (
             <Layout>
@@ -62,6 +66,26 @@ export default function DetalleProducto({ product }: Props) {
                                     <p><strong>{mype.name}</strong></p>
                                     <p>Precio: ${mype.pivot?.custom_price ?? 'N/A'}</p>
                                     <p>Calificación: {mype.pivot?.product_rate ?? 'N/A'}</p>
+                                     
+                                    <div>
+                                        <button
+                                            className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                addToCart({
+                                                    id: product.id, 
+                                                    mypeId: mype.id, 
+                                                    name: product.product_name, 
+                                                    description: product.product_description, 
+                                                    price: mype.pivot?.custom_price || 0, 
+                                                    quantity: 1, 
+                                                    mypeName: mype.name,
+                                                });
+                                            }}
+                                        >
+                                            Agregar al carrito
+                                        </button>
+                                    </div>
                                 </li>
                             ))}
                         </ul>

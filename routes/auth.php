@@ -36,7 +36,7 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 });
 
-Route::middleware('auth:mype')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
@@ -55,15 +55,6 @@ Route::middleware('auth:mype')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
-});
-
-// Rutas para Mypes no autenticadas
-Route::middleware('guest:mype')->group(function () {
-    Route::get('mype/register', [MypeAuthController::class, 'showRegisterForm'])->name('mype.register');
-    Route::post('mype/register', [MypeAuthController::class, 'register'])->name('mype.register.submit');
-
-    Route::get('mype/login', [MypeAuthController::class, 'showLoginForm'])->name('mype.login');
-    Route::post('mype/login', [MypeAuthController::class, 'login'])->name('mype.login.submit');
 });
 
 // Rutas para Mypes autenticadas

@@ -28,15 +28,18 @@ class WelcomeController extends Controller
     {
         $products = Product::with('mypes')->paginate(8);
 
-        // Obtener las categorías de la base de datos
         $categories = Product::select('category')->distinct()->pluck('category')->toArray();
 
+        $authUser = Auth::guard('mype')->check()
+            ? ['user' => Auth::guard('mype')->user(), 'type' => 'mype']
+            : (Auth::guard('web')->check()
+                ? ['user' => Auth::guard('web')->user(), 'type' => 'user']
+                : ['user' => null, 'type' => null]);
+
         return Inertia::render('welcome', [
-            'auth' => [
-                'user' => Auth::guard('mype')->user(),
-            ],
+            'auth' => $authUser,
             'products' => $products,
-            'categories' => $categories, // Pasa las categorías al componente
+            'categories' => $categories,
         ]);
     }
 }
