@@ -1,10 +1,15 @@
 import { useCart } from '@/context/CartContext';
+import { router } from '@inertiajs/react';
 
 const Cart = ({ onClose }: { onClose: () => void }) => {
   const { cart, incrementQuantity, decrementQuantity, removeFromCart, clearCart } = useCart();
 
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
+  const goToCheckout = () => {
+    router.post('/checkout/store-cart', { items: cart });
   };
 
   return (
@@ -60,6 +65,7 @@ const Cart = ({ onClose }: { onClose: () => void }) => {
           Volver
         </button>
         <button
+          onClick={goToCheckout}
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
         >
           Continuar

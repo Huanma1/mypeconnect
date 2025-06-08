@@ -9,12 +9,11 @@ use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\WebpayController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProductCommentController;
-use App\Models\Mype;
-use App\Http\Controllers\MypeReviewController;
+use Illuminate\Http\Request;
+use App\Http\Controllers\OrderController;
 
 // Página de inicio (pública)
 Route::get('/', [WelcomeController::class, 'showWelcome'])->name('home');
@@ -71,11 +70,23 @@ Route::get('/mypes/{mype}', function (App\Models\Mype $mype) {
 Route::post('/mypes/{mype}/review', [MypeController::class, 'storeReview'])->name('mypes.review');
 Route::get('/mypes/{id}', [MypeController::class, 'show'])->name('mypes.show');
 
+Route::post('/checkout/store-cart', function (Request $request) {
+    session(['cart_items' => $request->items]);
+    return redirect('/checkout');
+});
 
+Route::get('/checkout', function () {
+    $cartItems = session('cart_items', []);
+    return Inertia::render('CheckoutPage', [
+        'cartItems' => $cartItems,
+    ]);
+});
 
-//RUTAS PARA WEBPAY
-Route::post('/webpay/create', [WebpayController::class, 'create'])->name('webpay.create');
-Route::get('/webpay/callback', [WebpayController::class, 'callback'])->name('webpay.callback');
+Route::post('/orders', [OrderController::class, 'store']);
+
+Route::get('/gracias-por-tu-compra', function () {
+    return Inertia::render('ThankYouPage'); 
+})->name('orders.thankyou');
 
 // Rutas de usuarios (clientes) y autenticación general están en:
 require __DIR__.'/auth.php';
