@@ -50,7 +50,6 @@ export default function MainLayout({ children, categories = [] }: Props) {
     setShowRegister(true);
   };
 
-  console.log('auth.user in MainLayout:', auth.user); // Depuración
 
   return (
     <Loading>
@@ -88,7 +87,7 @@ export default function MainLayout({ children, categories = [] }: Props) {
           />
         )
       )}
-
+      <div></div>
       {showRegister && (
         registerType === null ? (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
@@ -131,6 +130,12 @@ export default function MainLayout({ children, categories = [] }: Props) {
             <Link href={route('home')} style={{ display: 'inline-block' }}>
               <img src="/logo completo.png" alt="Mype Connect" style={styles.logo} />
             </Link>
+
+            <div>
+                <Link href={route('mypes.index')}className="bg-blue-600 text-white px-4 py-2 rounded">
+                  Ver todas las Mypes
+                </Link>
+              </div>
 
             <nav style={styles.nav}>
               {auth.user ? (

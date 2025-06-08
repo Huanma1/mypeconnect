@@ -114,4 +114,15 @@ class MypeController extends Controller
             ],
         ]);
     }
+    public function index()
+    {
+        $mypes = Mype::select('id', 'name')->get();
+
+        return Inertia::render('MypesList', [
+            'mypes' => $mypes,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
+    }
 }

@@ -62,13 +62,14 @@ Route::post('mype/login', [MypeAuthController::class, 'login'])->name('mype.logi
 Route::get('/mypes/register', [MypeController::class, 'create'])->name('mypes.register');
 Route::post('/mypes', [MypeController::class, 'store'])->name('mypes.store');
 
+Route::get('/mypes', [MypeController::class, 'index'])->name('mypes.index');
 Route::get('/mypes/{mype}', function (App\Models\Mype $mype) {
     return Inertia::render('Mype/Profile', [
         'mype' => $mype->load('products', 'reviews.user'),
     ]);
 })->name('mypes.profile');
-
 Route::post('/mypes/{mype}/review', [MypeController::class, 'storeReview'])->name('mypes.review');
+Route::get('/mypes/{id}', [MypeController::class, 'show'])->name('mypes.show');
 
 
 
