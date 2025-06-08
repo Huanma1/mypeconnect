@@ -105,7 +105,7 @@ export default function ProductList({ products, filters, categories }: Props) {
                     onSelectCategory={handleSelectCategory}
                 />
 
-                {/* Filtros envueltos en rectángulo blanco con sombra */}
+                {/* Filtros alineados horizontalmente y ordenados */}
                 <div className="mb-8 bg-white shadow-md rounded-lg p-6 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
                     <input
                         type="number"
@@ -121,13 +121,13 @@ export default function ProductList({ products, filters, categories }: Props) {
                         onChange={e => setMaxPrice(e.target.value)}
                         className="p-2 border rounded w-full"
                     />
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3 w-full">
                         <label htmlFor="sort" className="font-semibold whitespace-nowrap">Ordenar por:</label>
                         <select
                             id="sort"
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value)}
-                            className="border border-gray-300 rounded px-2 py-1"
+                            className="border border-gray-300 rounded px-2 py-2 w-full"
                         >
                             <option value="">Seleccionar</option>
                             <option value="rating-asc">Valoración (Peor a Mejor)</option>
@@ -138,24 +138,24 @@ export default function ProductList({ products, filters, categories }: Props) {
                             <option value="name-desc">Nombre (Z-A)</option>
                         </select>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-3 w-full">
                         <button
                             type="button"
                             onClick={handleFilter}
-                            className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition flex-grow"
+                            className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition w-full"
                         >
                             Aplicar
                         </button>
                         <button
                             onClick={clearFilters}
-                            className="bg-gray-600 text-white px-3 py-2 rounded hover:bg-gray-700 transition flex-grow"
+                            className="bg-gray-600 text-white px-3 py-2 rounded hover:bg-gray-700 transition w-full"
                         >
                             Quitar
                         </button>
                     </div>
                 </div>
 
-                {/* Listado de productos con tarjetas limpias */}
+                {/* Productos */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {sortedProducts.length > 0 ? (
                         sortedProducts.map((product) => {
