@@ -13,6 +13,8 @@ use App\Http\Controllers\WebpayController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProductCommentController;
+use App\Models\Mype;
+use App\Http\Controllers\MypeReviewController;
 
 // Página de inicio (pública)
 Route::get('/', [WelcomeController::class, 'showWelcome'])->name('home');
@@ -59,6 +61,16 @@ Route::get('mype/login', [MypeAuthController::class, 'showLoginForm'])->name('my
 Route::post('mype/login', [MypeAuthController::class, 'login'])->name('mype.login.submit');
 Route::get('/mypes/register', [MypeController::class, 'create'])->name('mypes.register');
 Route::post('/mypes', [MypeController::class, 'store'])->name('mypes.store');
+
+Route::get('/mypes/{mype}', function (App\Models\Mype $mype) {
+    return Inertia::render('Mype/Profile', [
+        'mype' => $mype->load('products', 'reviews.user'),
+    ]);
+})->name('mypes.profile');
+
+Route::post('/mypes/{mype}/review', [MypeController::class, 'storeReview'])->name('mypes.review');
+
+
 
 //RUTAS PARA WEBPAY
 Route::post('/webpay/create', [WebpayController::class, 'create'])->name('webpay.create');

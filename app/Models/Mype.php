@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Product;
 
 /**
  * @property int $id
@@ -95,5 +96,11 @@ class Mype extends Authenticatable
             'tipo_cambio' => $tipo,
             'comentario' => $comentario,
         ]);
+        
     }
+    public function reviews()
+    {
+        return $this->hasMany(MypeReview::class);
+    }
+
 }

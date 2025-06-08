@@ -79,4 +79,28 @@ class MypeController extends Controller
 
         return view('products.inventory-history', compact('inventoryHistories'));
     }
+    public function storeReview(Request $request, Mype $mype)
+    {
+        $user = auth()->user();
+
+        // Validar si ya existe review del usuario para esta mype
+        $exists = $mype->reviews()->where('user_id', $user->id)->exists();
+
+        if ($exists) {
+            return back()->withErrors(['comment' => 'Ya has dejado una calificación para esta mype.']);
+        }
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|max:1000',
+        ]);
+
+        $mype->reviews()->create([
+            'user_id' => $user->id,
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+        ]);
+
+        return redirect()->back()->with('success', 'Comentario agregado.');
+    }
 }
