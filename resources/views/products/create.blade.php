@@ -5,20 +5,20 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 </head>
 <body class="bg-gray-100">
-    <div class="container mx-auto mt-10">
-        <h1 class="text-2xl font-bold mb-6">Agregar Producto</h1>
+    <div class="max-w-2xl mx-auto mt-10">
+        <h1 class="text-3xl font-bold mb-6 text-center">Agregar Producto</h1>
 
-        <!-- Mostrar mensaje de éxito -->
+        <!-- Mensaje de éxito -->
         @if (session('success'))
-            <div class="bg-green-100 text-green-800 p-4 rounded mb-4">
+            <div class="bg-green-100 text-green-800 p-4 rounded mb-4 shadow">
                 {{ session('success') }}
             </div>
         @endif
 
-        <!-- Mostrar mensajes de error -->
+        <!-- Mensajes de error -->
         @if ($errors->any())
-            <div class="bg-red-100 text-red-800 p-4 rounded mb-4">
-                <ul>
+            <div class="bg-red-100 text-red-800 p-4 rounded mb-4 shadow">
+                <ul class="list-disc pl-5">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -26,29 +26,56 @@
             </div>
         @endif
 
-        <!-- Formulario para agregar un producto -->
-        <form action="{{ route('products.mype') }}" method="POST">
-            @csrf
-            <label for="product_name">Nombre del Producto:</label>
-            <input type="text" name="product_name" id="product_name" value="{{ old('product_name') }}" required><br>
+        <!-- Formulario -->
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <form action="{{ route('products.mype') }}" method="POST" class="space-y-4">
+                @csrf
 
-            <label for="product_description">Descripción:</label>
-            <textarea name="product_description" id="product_description" required>{{ old('product_description') }}</textarea><br>
+                <div>
+                    <label for="product_name" class="block font-semibold mb-1">Nombre del Producto:</label>
+                    <input type="text" name="product_name" id="product_name"
+                        value="{{ old('product_name') }}"
+                        required
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
 
+                <div>
+                    <label for="product_description" class="block font-semibold mb-1">Descripción:</label>
+                    <textarea name="product_description" id="product_description" required
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                        rows="3">{{ old('product_description') }}</textarea>
+                </div>
 
-            <label for="category">Categoría:</label>
-            <input type="text" name="category" id="category" value="{{ old('category') }}" required><br>
+                <div>
+                    <label for="category" class="block font-semibold mb-1">Categoría:</label>
+                    <input type="text" name="category" id="category"
+                        value="{{ old('category') }}"
+                        required
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
 
+                <div>
+                    <label for="custom_price" class="block font-semibold mb-1">Precio Personalizado:</label>
+                    <input type="number" name="custom_price" id="custom_price"
+                        value="{{ old('custom_price') }}"
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
 
-            <label for="custom_price">Precio Personalizado:</label>
-            <input type="number" name="custom_price" id="custom_price" value="{{ old('custom_price') }}"><br>
+                <div>
+                    <label for="stock" class="block font-semibold mb-1">Stock:</label>
+                    <input type="number" name="stock" id="stock" min="0"
+                        value="{{ old('stock') }}"
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
 
-
-            <label for="stock">Stock:</label>
-            <input type="number" name="stock" id="stock" min="0" value="{{ old('stock') }}"><br>
-
-            <button type="submit" class="mt-4 bg-blue-500 text-white p-2 rounded">Crear Producto</button>
-        </form>
+                <div class="text-center">
+                    <button type="submit"
+                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                        Crear Producto
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>
