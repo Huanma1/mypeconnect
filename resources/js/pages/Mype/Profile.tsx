@@ -8,14 +8,19 @@ interface User {
 interface Review {
   id: number;
   user?: User;
+  product?: Product;
   rating: number;
   comment: string;
 }
 
 interface Product {
   id: number;
-  name: string;
-  price: number;
+  product_name: string;
+  pivot: {
+    custom_price: number;
+    stock: number;
+    product_rate?: number;
+  };
 }
 
 interface Mype {
@@ -30,13 +35,9 @@ interface Props {
 }
 
 export default function MypeProfile({ mype }: Props) {
-  // auth es opcional para evitar error de conversión TS
   const { auth } = (usePage().props as { auth?: { user?: User } }) || {};
 
-  const { data, setData, post, processing, errors } = useForm<{
-    rating: number;
-    comment: string;
-  }>({
+  const { data, setData, post, processing, errors } = useForm({
     rating: 5,
     comment: '',
   });
@@ -54,8 +55,8 @@ export default function MypeProfile({ mype }: Props) {
       <ul className="grid grid-cols-2 gap-4">
         {mype.products.map((product) => (
           <li key={product.id} className="border p-3 rounded">
-            <p className="font-medium">{product.name}</p>
-            <p>${product.price}</p>
+            <p className="font-medium">{product.product_name}</p>
+            <p>Precio: ${product.pivot.custom_price}</p>
           </li>
         ))}
       </ul>

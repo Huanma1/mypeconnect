@@ -35,4 +35,8 @@ class Product extends Model
     {
         return $this->hasMany(ProductComment::class);
     }
+    public function mype()
+    {
+        return $this->belongsTo(Mype::class);
+    }
 }

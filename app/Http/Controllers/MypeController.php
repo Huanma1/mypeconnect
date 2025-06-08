@@ -103,4 +103,15 @@ class MypeController extends Controller
 
         return redirect()->back()->with('success', 'Comentario agregado.');
     }
+    Public function show($id)
+    {
+        $mype = Mype::with(['products', 'reviews.user'])->findOrFail($id);
+
+        return Inertia::render('Mype/Profile', [
+            'mype' => $mype,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
+    }
 }
