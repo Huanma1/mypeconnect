@@ -100,3 +100,13 @@ export interface Paginated<T> {
     data: T[];
     links: PaginationLink[];
 }
+
+export interface Review {
+    id: number;
+    user?: User;             // usuario que hizo el review, opcional por si es anónimo
+    rating: number;          // calificación (ej. 1 a 5)
+    comment: string;         // comentario
+    created_at: string;
+    updated_at: string;
+    [key: string]: unknown;
+}

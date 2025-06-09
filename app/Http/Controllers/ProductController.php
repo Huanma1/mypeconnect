@@ -106,14 +106,15 @@ class ProductController extends Controller
 
     public function show(int $id): InertiaResponse|RedirectResponse
     {
-        $product = Product::with('mypes')->find($id);
+        $product = Product::with(['comments.user', 'mypes'])->findOrFail($id);
 
         if (!$product) {
             return redirect()->route('products.index')->with('error', 'Producto no encontrado.');
         }
+        $averageRating = $product->comments()->avg('rating');
 
         return Inertia::render('DetalleProducto', [
-            'product' => $product,
+            'product' => $product->toArray() + ['average_rating' => round($averageRating, 1)],
         ]);
     }
 

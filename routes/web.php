@@ -9,9 +9,11 @@ use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\WebpayController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\ProductCommentController;
+use Illuminate\Http\Request;
+use App\Http\Controllers\OrderController;
 
 // Página de inicio (pública)
 Route::get('/', [WelcomeController::class, 'showWelcome'])->name('home');
@@ -45,6 +47,7 @@ Route::middleware(['auth:mype'])->group(function () {
     Route::get('/dashboard/inventory-history', [MypeController::class, 'showInventoryHistory'])->name('dashboard.inventory.history');
 });
 
+Route::post('/comments', [ProductCommentController::class, 'store'])->name('comments.store');
 
 // Rutas para usuarios (clientes)
 Route::get('/user/login', [AuthenticatedSessionController::class, 'create'])->name('user.login');
@@ -58,9 +61,32 @@ Route::post('mype/login', [MypeAuthController::class, 'login'])->name('mype.logi
 Route::get('/mypes/register', [MypeController::class, 'create'])->name('mypes.register');
 Route::post('/mypes', [MypeController::class, 'store'])->name('mypes.store');
 
-//RUTAS PARA WEBPAY
-Route::post('/webpay/create', [WebpayController::class, 'create'])->name('webpay.create');
-Route::get('/webpay/callback', [WebpayController::class, 'callback'])->name('webpay.callback');
+Route::get('/mypes', [MypeController::class, 'index'])->name('mypes.index');
+Route::get('/mypes/{mype}', function (App\Models\Mype $mype) {
+    return Inertia::render('Mype/Profile', [
+        'mype' => $mype->load('products', 'reviews.user'),
+    ]);
+})->name('mypes.profile');
+Route::post('/mypes/{mype}/review', [MypeController::class, 'storeReview'])->name('mypes.review');
+Route::get('/mypes/{id}', [MypeController::class, 'show'])->name('mypes.show');
+
+Route::post('/checkout/store-cart', function (Request $request) {
+    session(['cart_items' => $request->items]);
+    return redirect('/checkout');
+});
+
+Route::get('/checkout', function () {
+    $cartItems = session('cart_items', []);
+    return Inertia::render('CheckoutPage', [
+        'cartItems' => $cartItems,
+    ]);
+});
+
+Route::post('/orders', [OrderController::class, 'store']);
+
+Route::get('/gracias-por-tu-compra', function () {
+    return Inertia::render('ThankYouPage'); 
+})->name('orders.thankyou');
 
 // Rutas de usuarios (clientes) y autenticación general están en:
 require __DIR__.'/auth.php';

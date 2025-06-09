@@ -1,10 +1,16 @@
 import { useCart } from '@/context/CartContext';
-import { useEffect, useRef } from 'react';
-import { Product } from '@/types';
+import { router } from '@inertiajs/react';
+import React, { useEffect, useRef } from 'react'; // ✅ AÑADIDO
 
 const Cart = ({ onClose }: { onClose: () => void }) => {
-  const { cart, incrementQuantity, decrementQuantity, removeFromCart, clearCart } = useCart();
-  const { cart, removeFromCart, clearCart } = useCart();
+  const {
+    cart,
+    incrementQuantity,
+    decrementQuantity,
+    removeFromCart,
+    clearCart,
+  } = useCart();
+
   const cartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,10 +27,10 @@ const Cart = ({ onClose }: { onClose: () => void }) => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-    return cart.reduce((total, item) => {
-      const price = item.mypes?.[0]?.pivot?.custom_price || 0;
-      return total + price * item.quantity;
-    }, 0);
+  const goToCheckout = () => {
+    router.post('/checkout/store-cart', {
+      items: JSON.stringify(cart), // ✅ Envía como string si es necesario
+    });
   };
 
   return (
@@ -80,6 +86,7 @@ const Cart = ({ onClose }: { onClose: () => void }) => {
           Volver
         </button>
         <button
+          onClick={goToCheckout}
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
         >
           Continuar
