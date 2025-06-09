@@ -13,7 +13,8 @@ class StockController extends Controller
         $request->validate([
             'cantidad' => 'nullable|integer|min:1', // Opcional
             'tipo' => 'nullable|string|in:entrada,salida', // Opcional
-            'custom_price' => 'required|numeric|min:0', // Obligatorio
+            'custom_price' => 'nullable|numeric|min:0', // Obligatorio
+            'discount' => 'nullable|numeric|min:0|max:100',
             'comentario' => 'nullable|string',
         ]);
 
@@ -54,12 +55,14 @@ class StockController extends Controller
                     'cantidad_cambiada' => $cantidad,
                     'tipo_cambio' => $request->tipo,
                     'comentario' => $request->comentario,
+                    'discount' => $request->discount, // 👈 Agregado
                 ]);
             }
 
             // Actualizar siempre el precio personalizado
             $mype->products()->updateExistingPivot($productId, [
                 'custom_price' => $request->custom_price,
+                'discount' => $request->discount, // 👈 Agregado
             ]);
 
         } catch (\Exception $e) {

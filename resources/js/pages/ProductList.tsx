@@ -200,6 +200,9 @@ export default function ProductList({ products, filters, categories }: Props) {
                                     <p className="text-yellow-500">
                                         Calificación: {mype?.pivot?.product_rate ?? 'N/A'}
                                     </p>
+                                    <p>
+                                        hola {mype?.pivot?.discount ?? 'N/a'}
+                                    </p>
                                 </Link>
                             );
                         })

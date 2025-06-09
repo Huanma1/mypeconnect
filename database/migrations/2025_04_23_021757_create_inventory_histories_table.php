@@ -15,6 +15,7 @@ class CreateInventoryHistoriesTable extends Migration
             $table->integer('cantidad_cambiada');
             $table->string('tipo_cambio'); // 'entrada' o 'salida'
             $table->text('comentario')->nullable();
+            $table->decimal('discount', 5, 2)->nullable()->after('custom_price'); // porcentaje
             $table->timestamps();
         });
     }

@@ -62,6 +62,7 @@ export interface MypeProductPivot {
   stock: number
   product_rate: number
   min_stock?: number
+  discount?: number
   created_at?: string
   updated_at?: string
 }
@@ -85,6 +86,7 @@ export interface InventoryHistory {
   cantidad_cambiada: number
   tipo_cambio: 'entrada' | 'salida'
   comentario?: string
+  discount?: number
   created_at: string
   updated_at: string
 }

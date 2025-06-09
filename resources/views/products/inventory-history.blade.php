@@ -18,6 +18,7 @@
                         <th class="px-4 py-2">Cantidad Cambiada</th>
                         <th class="px-4 py-2">Tipo de Cambio</th>
                         <th class="px-4 py-2">Comentario</th>
+                        <th class="px-4 py-2">Descuento</th>
                         <th class="px-4 py-2">Fecha</th>
                     </tr>
                 </thead>
@@ -28,6 +29,7 @@
                             <td class="border px-4 py-2">{{ $history->cantidad_cambiada }}</td>
                             <td class="border px-4 py-2">{{ ucfirst($history->tipo_cambio) }}</td>
                             <td class="border px-4 py-2">{{ $history->comentario ?? 'N/A' }}</td>
+                            <td class="border px-4 py-2">{{ $history->discount ?? 'N/A' }}</td>
                             <td class="border px-4 py-2">{{ $history->created_at->format('d/m/Y H:i') }}</td>
                         </tr>
                     @endforeach

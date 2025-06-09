@@ -19,7 +19,7 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Modificar Stock',
+        title: 'Gestión de Productos',
         href: '/dashboard/products',
         icon: BookOpen,
     },

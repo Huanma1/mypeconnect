@@ -27,6 +27,9 @@ return new class extends Migration
             //Calificaciones
             $table->decimal('product_rate')->default(0);
             $table->integer('ratings_count')->default(0);
+
+            //Información de descuento
+            $table->decimal('discount', 5, 2)->nullable()->after('custom_price'); // porcentaje
         });
 
     }

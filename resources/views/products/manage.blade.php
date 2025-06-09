@@ -65,7 +65,10 @@
                             </select>
 
                             <label for="custom_price_{{ $product->id }}" class="block text-sm font-medium text-gray-700 mt-2">Precio Personalizado:</label>
-                            <input type="number" name="custom_price" id="custom_price_{{ $product->id }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" value="{{ $product->pivot->custom_price }}" required>
+                            <input type="number" name="custom_price" id="custom_price_{{ $product->id }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" value="{{ $product->pivot->custom_price }}" >
+
+                            <label for="discount_{{ $product->id }}" class="block text-sm font-medium text-gray-700 mt-2">Descuento (%):</label>
+                            <input type="number" step="0.01" min="0" max="100" name="discount" id="discount_{{ $product->id }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" value="{{ $product->pivot->custom_price }} ">
 
                             <label for="comentario_{{ $product->id }}" class="block text-sm font-medium text-gray-700 mt-2">Comentario:</label>
                             <textarea name="comentario" id="comentario_{{ $product->id }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></textarea>
