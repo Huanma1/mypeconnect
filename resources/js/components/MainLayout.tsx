@@ -5,6 +5,8 @@ import LoginModal from '@/pages/Login';
 import RegisterModal from '@/pages/Register';
 import UserRegister from '@/pages/UserRegister';
 import Loading from '@/components/Loading';
+import CategoryDrawer from '@/components/ui/Categorias';
+import Cart from '@/components/Cart';
 
 interface Props {
   children: React.ReactNode;
@@ -28,16 +30,22 @@ export default function MainLayout({ children, categories = [] }: Props) {
   const [showRegister, setShowRegister] = useState(false);
   const [loginType, setLoginType] = useState<'user' | 'mype' | null>(null);
   const [registerType, setRegisterType] = useState<'user' | 'mype' | null>(null);
+  const [showCart, setShowCart] = useState(false);
+  const [showCategoriesDrawer, setShowCategoriesDrawer] = useState(false);
 
   const handleSelectCategory = (cat: string) => {
-    router.get('/products', {
-      category: cat,
-      min_price: filters?.min_price ?? '',
-      max_price: filters?.max_price ?? '',
-    }, {
-      preserveState: false,
-      preserveScroll: true,
-    });
+    router.get(
+      '/products',
+      {
+        category: cat,
+        min_price: filters?.min_price ?? '',
+        max_price: filters?.max_price ?? '',
+      }, 
+      {
+        preserveState: false,
+        preserveScroll: true,
+      }
+    );
   };
 
   const handleLoginClick = () => {
@@ -50,11 +58,10 @@ export default function MainLayout({ children, categories = [] }: Props) {
     setShowRegister(true);
   };
 
-
   return (
     <Loading>
-      {showLogin && (
-        loginType === null ? (
+      {showLogin && 
+      (loginType === null ? (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 w-96 relative shadow-xl">
               <button
@@ -81,15 +88,11 @@ export default function MainLayout({ children, categories = [] }: Props) {
             </div>
           </div>
         ) : (
-          <LoginModal
-            onClose={() => setShowLogin(false)}
-            userType={loginType!}
-          />
-        )
-      )}
-      <div></div>
-      {showRegister && (
-        registerType === null ? (
+          <LoginModal onClose={() => setShowLogin(false)} userType={loginType!} />
+        ))}
+
+      {showRegister &&
+        (registerType === null ? (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 w-96 relative shadow-xl">
               <button
@@ -115,49 +118,95 @@ export default function MainLayout({ children, categories = [] }: Props) {
               </div>
             </div>
           </div>
+        ) : registerType === 'user' ? (
+          <UserRegister onClose={() => setShowRegister(false)} />
         ) : (
-          registerType === 'user' ? (
-            <UserRegister onClose={() => setShowRegister(false)} />
-          ) : (
-            <RegisterModal onClose={() => setShowRegister(false)} />
-          )
-        )
+          <RegisterModal onClose={() => setShowRegister(false)} />
+        ))}
+
+        {showCategoriesDrawer && (
+        <CategoryDrawer
+          isOpen={showCategoriesDrawer}
+          onClose={() => setShowCategoriesDrawer(false)}
+          categories={categories}
+          onSelectCategory={(cat) => {
+            handleSelectCategory(cat);
+            setShowCategoriesDrawer(false);
+          }}
+        />
       )}
+
+      {showCart && <Cart onClose={() => setShowCart(false)} />}
 
       <div style={styles.container}>
         <header style={styles.header}>
           <div style={styles.headerContent}>
-            <Link href={route('home')} style={{ display: 'inline-block' }}>
-              <img src="/logo completo.png" alt="Mype Connect" style={styles.logo} />
-            </Link>
+            {/* Lado izquierdo: logo + categorías */}
+            <div style={styles.leftSection}>
+              <Link href={route('home')} style={{ display: 'inline-block' }}>
+                <img src="/logo completo.png" alt="Mype Connect" style={styles.logo} />
+              </Link>
+            
+              <button
+                onClick={() => setShowCategoriesDrawer(true)}
+                style={styles.outlinedButton}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  width={20}
+                  height={20}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+                <span style={{ marginLeft: 6 }}>Categorías</span>
+              </button>
 
-            <div>
+              <div>
                 <Link href={route('mypes.index')}className="bg-blue-600 text-white px-4 py-2 rounded">
                   Ver todas las Mypes
                 </Link>
               </div>
+            </div>
 
-            <nav style={styles.nav}>
-              {auth.user ? (
-              <>
-                <span style={styles.navText}>
-                  Bienvenido, {auth.user.name || 'Usuario desconocido'} ({auth.type})
-                </span>
-                <Link href={route('dashboard')} style={styles.link}>
-                  Dashboard
-                </Link>
-              </>
-            ) : (
-              <>
-                <button onClick={handleLoginClick} style={styles.linkButton}>
-                  Log in
-                </button>
-                <button onClick={() => setShowRegister(true)} style={styles.linkButton}>
-                  Register
-                </button>
-              </>
-            )}
-            </nav>
+            {/* Lado derecho: navegación + carrito */}
+            <div style={styles.rightSection}>
+              <nav style={styles.nav}>
+                {auth.user ? (
+                  <>
+                    <span style={styles.navText}>
+                      Bienvenido, {auth.user.name || 'Usuario desconocido'} ({auth.type})
+                    </span>
+                    <Link href={route('dashboard')} style={styles.link}>
+                      Dashboard
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={handleLoginClick} style={styles.linkButton}>
+                      Log in
+                    </button>
+                    <button onClick={handleRegisterClick} style={styles.linkButton}>
+                      Register
+                    </button>
+                  </>
+                )}
+              </nav>
+
+              <button
+                onClick={() => setShowCart(true)}
+                style={styles.outlinedButton}
+              >
+                🛒 <span style={{ marginLeft: 6 }}>Ver Carrito</span>
+              </button>
+            </div>
           </div>
         </header>
 
@@ -183,14 +232,26 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: 'space-between',
     alignItems: 'center',
     flexWrap: 'wrap',
+    gap: '1rem',
+  },
+  leftSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+  },
+  rightSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
   },
   logo: {
-    height: '40px',
+    height: 40,
     transform: 'scale(1.5)',
   },
   nav: {
     display: 'flex',
     gap: '1rem',
+    alignItems: 'center',
   },
   navText: {
     fontWeight: 500,
@@ -206,6 +267,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     cursor: 'pointer',
     textDecoration: 'underline',
     fontSize: '1rem',
+  },
+  outlinedButton: {
+    display: 'flex',
+    alignItems: 'center',
+    border: '1px solid white',
+    borderRadius: '0.375rem',
+    padding: '0.35rem 0.75rem',
+    background: 'transparent',
+    color: 'white',
+    fontSize: '0.95rem',
+    cursor: 'pointer',
   },
   main: {
     padding: '1.5rem',

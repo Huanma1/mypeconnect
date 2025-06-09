@@ -1,8 +1,27 @@
 import { useCart } from '@/context/CartContext';
 import { router } from '@inertiajs/react';
+import { useEffect, useRef } from 'react';
 
 const Cart = ({ onClose }: { onClose: () => void }) => {
-  const { cart, incrementQuantity, decrementQuantity, removeFromCart, clearCart } = useCart();
+  const {
+    cart,
+    incrementQuantity,
+    decrementQuantity,
+    removeFromCart,
+    clearCart,
+  } = useCart();
+
+  const cartRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
 
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -13,7 +32,10 @@ const Cart = ({ onClose }: { onClose: () => void }) => {
   };
 
   return (
-    <div className="fixed top-0 right-0 w-1/3 h-full bg-white shadow-lg p-6 z-50">
+    <div
+      ref={cartRef}
+      className="fixed top-0 right-0 w-1/3 h-full bg-white shadow-lg p-6 z-50"
+    >
       <h2 className="text-2xl font-bold mb-4">🛒 Bolsa de compras</h2>
 
       {/* Lista de productos */}
