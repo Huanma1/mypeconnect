@@ -5,36 +5,46 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 </head>
 <body class="bg-gray-100">
-    <div class="container mx-auto mt-10">
-        <h1 class="text-2xl font-bold mb-6">Historial de Cambios</h1>
+    <div class="max-w-6xl mx-auto mt-10 px-4">
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-900">
+            Historial de Cambios
+        </h1>
 
         @if($inventoryHistories->isEmpty())
-            <p>No hay cambios registrados en el inventario.</p>
+            <div class="bg-white p-6 rounded-lg shadow text-center text-gray-500">
+                No hay cambios registrados en el inventario.
+            </div>
         @else
-            <table class="table-auto w-full bg-white shadow-md rounded">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="px-4 py-2">Producto</th>
-                        <th class="px-4 py-2">Cantidad Cambiada</th>
-                        <th class="px-4 py-2">Tipo de Cambio</th>
-                        <th class="px-4 py-2">Comentario</th>
-                        <th class="px-4 py-2">Fecha</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($inventoryHistories as $history)
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <table class="min-w-full text-sm text-gray-800">
+                    <thead class="bg-gray-50 border-b text-left">
                         <tr>
-                            <td class="border px-4 py-2">{{ $history->product->product_name }}</td>
-                            <td class="border px-4 py-2">{{ $history->cantidad_cambiada }}</td>
-                            <td class="border px-4 py-2">{{ ucfirst($history->tipo_cambio) }}</td>
-                            <td class="border px-4 py-2">{{ $history->comentario ?? 'N/A' }}</td>
-                            <td class="border px-4 py-2">{{ $history->created_at->format('d/m/Y H:i') }}</td>
+                            <th class="px-6 py-3 font-semibold">Producto</th>
+                            <th class="px-6 py-3 font-semibold">Cantidad</th>
+                            <th class="px-6 py-3 font-semibold">Tipo</th>
+                            <th class="px-6 py-3 font-semibold">Comentario</th>
+                            <th class="px-6 py-3 font-semibold">Fecha</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        @foreach($inventoryHistories as $history)
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-6 py-4">{{ $history->product->product_name }}</td>
+                                <td class="px-6 py-4">{{ $history->cantidad_cambiada }}</td>
+                                <td class="px-6 py-4">
+                                    <span class="{{ strtolower($history->tipo_cambio) === 'entrada' ? 'text-green-600 font-medium' : 'text-red-500 font-medium' }}">
+                                        {{ ucfirst($history->tipo_cambio) }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">{{ $history->comentario ?? 'N/A' }}</td>
+                                <td class="px-6 py-4">{{ $history->created_at->format('d/m/Y H:i') }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
-            <div class="mt-4">
+            <div class="mt-6">
                 {{ $inventoryHistories->links() }}
             </div>
         @endif

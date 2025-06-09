@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Product, Paginated } from '@/types';
 import MainLayout from '@/components/MainLayout';
 import CategoryDrawer from '@/components/ui/Categorias';
-
 import Cart from '@/components/Cart';
 import { useCart } from '@/context/CartContext';
 
@@ -21,8 +20,7 @@ export default function ProductList({ products, filters, categories }: Props) {
     const [category, setCategory] = useState(filters?.category || '');
     const [minPrice, setMinPrice] = useState(filters?.min_price || '');
     const [maxPrice, setMaxPrice] = useState(filters?.max_price || '');
-    const [sortBy, setSortBy] = useState(''); 
-
+    const [sortBy, setSortBy] = useState('');
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isCartVisible, setIsCartVisible] = useState(false);
 
@@ -39,35 +37,34 @@ export default function ProductList({ products, filters, categories }: Props) {
         });
     };
 
-    // Ordena los productos según el criterio seleccionado
     const sortedProducts = [...products.data].sort((a, b) => {
         if (sortBy === 'rating-asc') {
             const ratingA = a.mypes?.[0]?.pivot?.product_rate || 0;
             const ratingB = b.mypes?.[0]?.pivot?.product_rate || 0;
-            return ratingA - ratingB; // Orden ascendente por valoración
+            return ratingA - ratingB;
         }
         if (sortBy === 'rating-desc') {
             const ratingA = a.mypes?.[0]?.pivot?.product_rate || 0;
             const ratingB = b.mypes?.[0]?.pivot?.product_rate || 0;
-            return ratingB - ratingA; // Orden descendente por valoración
+            return ratingB - ratingA;
         }
         if (sortBy === 'price-asc') {
             const priceA = a.mypes?.[0]?.pivot?.custom_price || 0;
             const priceB = b.mypes?.[0]?.pivot?.custom_price || 0;
-            return priceA - priceB; // Orden ascendente por precio
+            return priceA - priceB;
         }
         if (sortBy === 'price-desc') {
             const priceA = a.mypes?.[0]?.pivot?.custom_price || 0;
             const priceB = b.mypes?.[0]?.pivot?.custom_price || 0;
-            return priceB - priceA; // Orden descendente por precio
+            return priceB - priceA;
         }
         if (sortBy === 'name-asc') {
-            return a.product_name.localeCompare(b.product_name); // Orden A-Z
+            return a.product_name.localeCompare(b.product_name);
         }
         if (sortBy === 'name-desc') {
-            return b.product_name.localeCompare(a.product_name); // Orden Z-A
+            return b.product_name.localeCompare(a.product_name);
         }
-        return 0; // Sin orden
+        return 0;
     });
 
     const handleSelectCategory = (cat: string) => {
@@ -96,27 +93,7 @@ export default function ProductList({ products, filters, categories }: Props) {
 
     return (
         <MainLayout>
-            <div className="py-8">
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold">Productos Disponibles</h1>
-
-                    {/* Botón para mostrar el carrito */}
-                    <button
-                        onClick={() => setIsCartVisible(!isCartVisible)}
-                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-                    >
-                        🛒 Ver Carrito
-                    </button>
-                    {/* Botón para mostrar las categorias */}
-                    <button
-                        onClick={() => setIsDrawerOpen(true)}
-                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-                    >
-                        ☰ Categorías
-                    </button>
-                </div>
-
-                {/* Carrito lateral */}
+            <div className="py-8 max-w-[1200px] mx-auto">
                 {isCartVisible && (
                     <Cart onClose={() => setIsCartVisible(false)} />
                 )}
@@ -128,8 +105,8 @@ export default function ProductList({ products, filters, categories }: Props) {
                     onSelectCategory={handleSelectCategory}
                 />
 
-                {/* Filtros restantes (precio, aplicar, quitar) */}
-                <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                {/* Filtros alineados horizontalmente y ordenados */}
+                <div className="mb-8 bg-white shadow-md rounded-lg p-6 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
                     <input
                         type="number"
                         placeholder="Precio mínimo"
@@ -137,7 +114,6 @@ export default function ProductList({ products, filters, categories }: Props) {
                         onChange={e => setMinPrice(e.target.value)}
                         className="p-2 border rounded w-full"
                     />
-
                     <input
                         type="number"
                         placeholder="Precio máximo"
@@ -145,14 +121,13 @@ export default function ProductList({ products, filters, categories }: Props) {
                         onChange={e => setMaxPrice(e.target.value)}
                         className="p-2 border rounded w-full"
                     />
-                    
-                    <div className="flex items-center gap-4">
-                        <label htmlFor="sort" className="font-semibold">Ordenar por:</label>
+                    <div className="flex items-center gap-3 w-full">
+                        <label htmlFor="sort" className="font-semibold whitespace-nowrap">Ordenar por:</label>
                         <select
                             id="sort"
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value)}
-                            className="border border-gray-300 rounded px-2 py-1"
+                            className="border border-gray-300 rounded px-2 py-2 w-full"
                         >
                             <option value="">Seleccionar</option>
                             <option value="rating-asc">Valoración (Peor a Mejor)</option>
@@ -163,35 +138,44 @@ export default function ProductList({ products, filters, categories }: Props) {
                             <option value="name-desc">Nombre (Z-A)</option>
                         </select>
                     </div>
-
-                    <button
-                        type="button"
-                        onClick={handleFilter}
-                        className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition w-full"
-                    >
-                        Aplicar
-                    </button>
-
-                    <button
-                        onClick={clearFilters}
-                        className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition w-full"
-                    >
-                        Quitar
-                    </button>
+                    <div className="flex items-center gap-3 w-full">
+                        <button
+                            type="button"
+                            onClick={handleFilter}
+                            className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition w-full"
+                        >
+                            Aplicar
+                        </button>
+                        <button
+                            onClick={clearFilters}
+                            className="bg-gray-600 text-white px-3 py-2 rounded hover:bg-gray-700 transition w-full"
+                        >
+                            Quitar
+                        </button>
+                    </div>
                 </div>
 
-                {/* Lista de productos */}
+                {/* Productos */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {sortedProducts.length > 0 ? (
                         sortedProducts.map((product) => {
-                            const mype = product.mypes?.[0]; // Usar la primera mype si existe
+                            const mype = product.mypes?.[0];
 
                             return (
                                 <Link
                                     key={product.id}
                                     href={`/products/${product.id}`}
-                                    className="bg-white p-4 rounded shadow hover:shadow-lg transition-all"
+                                    className="bg-white p-4 rounded shadow hover:shadow-lg transition-all flex flex-col gap-2"
                                 >
+                                    <div className="w-full h-48 flex items-center justify-center overflow-hidden bg-gray-100 rounded">
+                                        <img
+                                            src={typeof product.product_image_url === 'string'
+                                                ? product.product_image_url
+                                                : '/placeholder.png'}
+                                            alt={product.product_name}
+                                            className="object-contain h-full"
+                                        />
+                                    </div>
                                     <h2 className="text-lg font-semibold">{product.product_name}</h2>
                                     <p className="text-gray-600">{product.product_description}</p>
                                     <p className="text-green-500 font-bold">
