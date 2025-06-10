@@ -32,8 +32,7 @@ interface PageProps extends InertiaPageProps {
 }
 
 export default function DetalleProducto({ product }: Props) {
-    const { auth } = usePage<PageProps>().props;
-
+    const auth = usePage<PageProps>().props.auth || { user: null };
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const { addToCart } = useCart();
 
@@ -65,9 +64,9 @@ export default function DetalleProducto({ product }: Props) {
         return sortOrder === 'asc' ? priceA - priceB : priceB - priceA;
     });
 
-    const hasCommented = product.comments.some(
-        (cmt) => cmt.user.name === auth.user.name
-    );
+    const hasCommented = auth.user 
+        ? product.comments.some(cmt => cmt.user.id === auth.user?.id)
+        : false;
 
     return (
         <Layout>
@@ -101,17 +100,34 @@ export default function DetalleProducto({ product }: Props) {
                             <p>No hay comentarios aún.</p>
                         )}
 
-                        {hasCommented ? (
-                            <div className="bg-yellow-100 text-yellow-800 p-4 rounded mb-4">
+                        {/* Alerta para usuarios no autenticados */}
+                        {!auth.user ? (
+                            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                                <div className="flex">
+                                    <div className="flex-shrink-0">
+                                        <svg className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div className="ml-3">
+                                        <p className="text-sm text-yellow-700">
+                                            <span className="font-medium">Debes iniciar sesión</span> para comentar y calificar productos.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : hasCommented ? (
+                            <div className="bg-yellow-100 text-yellow-800 p-4 rounded mt-4">
                                 Ya has comentado este producto.
                             </div>
                         ) : (
-                            <form onSubmit={handleAddComment} className="space-y-2">
+                            <form onSubmit={handleAddComment} className="space-y-2 mt-4">
                                 <textarea
                                     className="w-full p-2 border rounded"
                                     placeholder="Escribe tu comentario aquí..."
                                     value={data.comment}
                                     onChange={(e) => setData('comment', e.target.value)}
+                                    required
                                 />
 
                                 <div className="flex items-center space-x-2">
@@ -120,6 +136,7 @@ export default function DetalleProducto({ product }: Props) {
                                         value={data.rating}
                                         onChange={(e) => setData('rating', parseInt(e.target.value))}
                                         className="border p-1 rounded"
+                                        required
                                     >
                                         {[1, 2, 3, 4, 5].map((star) => (
                                             <option key={star} value={star}>{star} estrella{star > 1 ? 's' : ''}</option>
