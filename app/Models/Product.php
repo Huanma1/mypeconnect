@@ -31,10 +31,12 @@ class Product extends Model
 
         return $relation;
     }
+
     public function comments()
     {
         return $this->hasMany(ProductComment::class);
     }
+
     public function mype()
     {
         return $this->belongsTo(Mype::class);

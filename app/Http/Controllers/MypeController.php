@@ -7,9 +7,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\View\View;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Models\InventoryHistory;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,10 +15,10 @@ class MypeController extends Controller
     /**
      * Muestra el formulario de registro para un MYPE.
      */
-   public function create(): Response
-{
-    return Inertia::render('Register'); 
-}
+    public function create(): Response
+    {
+        return Inertia::render('Register');
+    }
 
     /**
      * Almacena un nuevo MYPE en la base de datos.
@@ -79,6 +76,7 @@ class MypeController extends Controller
 
         return view('products.inventory-history', compact('inventoryHistories'));
     }
+
     public function storeReview(Request $request, Mype $mype)
     {
         $user = auth()->user();
@@ -103,7 +101,8 @@ class MypeController extends Controller
 
         return redirect()->back()->with('success', 'Comentario agregado.');
     }
-    Public function show($id)
+
+    public function show($id)
     {
         $mype = Mype::with(['products', 'reviews.user'])->findOrFail($id);
 
@@ -114,6 +113,7 @@ class MypeController extends Controller
             ],
         ]);
     }
+
     public function index()
     {
         $mypes = Mype::select('id', 'name')->get();

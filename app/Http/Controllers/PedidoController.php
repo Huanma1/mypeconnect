@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
@@ -21,12 +21,13 @@ class PedidoController extends Controller
         $request->validate([
             'nombre' => 'required|string',
             'correo' => 'required|email',
-            'telefono' => 'required|string'
+            'telefono' => 'required|string',
         ]);
 
         // Aquí podrías guardar el pedido en la base de datos...
 
         session()->forget('carrito');
+
         return redirect('/')->with('success', 'Pedido confirmado con éxito');
     }
 }

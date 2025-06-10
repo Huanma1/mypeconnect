@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\User;
-use App\Models\Product;
 use Inertia\Inertia;
 
 class ProductComment extends Model
@@ -21,6 +19,7 @@ class ProductComment extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
     public function show($id)
     {
         $product = Product::with(['comments.user', 'mypes'])

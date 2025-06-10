@@ -13,7 +13,7 @@ class Order extends Model
         'phone',
         'total',
     ];
-    
+
     public function items()
     {
         return $this->hasMany(OrderItem::class);

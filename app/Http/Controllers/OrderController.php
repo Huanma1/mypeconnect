@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Order;
 use App\Models\MypeProduct;
+use App\Models\Order;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -23,7 +23,7 @@ class OrderController extends Controller
                 ->where('mype_id', $item['mypeId'])
                 ->first();
 
-            if (!$mypeProduct || $mypeProduct->stock < $item['quantity']) {
+            if (! $mypeProduct || $mypeProduct->stock < $item['quantity']) {
                 return back()->withErrors(['stock' => "Stock insuficiente para el producto '{$item['name']}'"]);
             }
         }
@@ -33,7 +33,7 @@ class OrderController extends Controller
             'customer_name' => $data['customer_name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
-            'total' => collect($data['items'])->sum(fn($item) => $item['price'] * $item['quantity']),
+            'total' => collect($data['items'])->sum(fn ($item) => $item['price'] * $item['quantity']),
         ]);
 
         // Crear los ítems y descontar el stock
@@ -54,6 +54,6 @@ class OrderController extends Controller
             }
         }
 
-       return redirect()->route('orders.thankyou');
+        return redirect()->route('orders.thankyou');
     }
 }

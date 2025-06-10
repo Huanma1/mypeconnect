@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Mype;
 use App\Models\Product;
 use Illuminate\Contracts\View\View as ViewContract;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View as ViewFacade;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
-use Illuminate\Http\RedirectResponse;
 
 class ProductController extends Controller
 {
@@ -103,12 +103,11 @@ class ProductController extends Controller
         ]);
     }
 
-
     public function show(int $id): InertiaResponse|RedirectResponse
     {
         $product = Product::with(['comments.user', 'mypes'])->findOrFail($id);
 
-        if (!$product) {
+        if (! $product) {
             return redirect()->route('products.index')->with('error', 'Producto no encontrado.');
         }
         $averageRating = $product->comments()->avg('rating');
@@ -122,7 +121,7 @@ class ProductController extends Controller
     {
         $mype = Auth::guard('mype')->user();
 
-        if (!$mype) {
+        if (! $mype) {
             return redirect()->route('login')->withErrors(['error' => 'No estás autenticado.']);
         }
 
@@ -131,7 +130,7 @@ class ProductController extends Controller
         $products = $mype->products()
             ->withPivot('stock', 'custom_price')
             ->when($search !== '', function ($query) use ($search) {
-                $query->where('product_name', 'like', '%' . $search . '%');
+                $query->where('product_name', 'like', '%'.$search.'%');
             })
             ->get();
 
@@ -144,7 +143,7 @@ class ProductController extends Controller
     {
         $mype = Mype::find($mypeId);
 
-        if (!$mype) {
+        if (! $mype) {
             abort(404, 'MYPE no encontrado');
         }
 

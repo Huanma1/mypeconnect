@@ -15,20 +15,20 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
 
-            //Relaciones
+            // Relaciones
             $table->foreignId('mype_id')->constrained()->onDelete('restrict');
             $table->foreignId('product_id')->constrained()->onDelete('restrict');
 
-            //Información del producto
+            // Información del producto
             $table->integer('custom_price')->nullable();
             $table->integer('stock')->default(0);
             $table->integer('min_stock')->default(5)->after('stock');
 
-            //Calificaciones
+            // Calificaciones
             $table->decimal('product_rate')->default(0);
             $table->integer('ratings_count')->default(0);
 
-            //Información de descuento
+            // Información de descuento
             $table->decimal('discount', 5, 2)->nullable()->after('custom_price'); // porcentaje
         });
 

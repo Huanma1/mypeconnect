@@ -19,7 +19,7 @@ class CarritoController extends Controller
             $carrito[$producto->id] = [
                 'nombre' => $producto->nombre,
                 'precio' => $producto->precio,
-                'cantidad' => 1
+                'cantidad' => 1,
             ];
         }
 
@@ -33,6 +33,7 @@ class CarritoController extends Controller
         $carrito = session()->get('carrito', []);
         unset($carrito[$request->producto_id]);
         session(['carrito' => $carrito]);
+
         return back()->with('success', 'Producto eliminado del carrito');
     }
 }

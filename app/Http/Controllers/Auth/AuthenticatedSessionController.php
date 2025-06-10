@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (Auth::guard('web')->attempt((array) $credentials, $request->boolean('remember'))) { 
+        if (Auth::guard('web')->attempt((array) $credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
             return redirect('/');

@@ -29,7 +29,7 @@ class MypeProduct extends Pivot
 
     public function getDiscountedPriceAttribute()
     {
-        if (!$this->discount || !$this->custom_price) {
+        if (! $this->discount || ! $this->custom_price) {
             return $this->custom_price;
         }
 

@@ -18,7 +18,7 @@ class InventoryHistory extends Model
         'tipo_cambio',
         'comentario',
         'discount', // Agregado para registrar el descuento aplicado
-        
+
     ];
 
     /**

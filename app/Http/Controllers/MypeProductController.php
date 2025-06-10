@@ -12,8 +12,8 @@ class MypeProductController extends Controller
     public function bajoStockPorMype($mypeId)
     {
         $productosBajoStock = MypeProduct::where('mype_id', $mypeId)
-            ->whereColumn('stock', '<', 'min_stock') 
-            ->with('product') 
+            ->whereColumn('stock', '<', 'min_stock')
+            ->with('product')
             ->get()
             ->map(function ($mypeProduct) {
                 return [

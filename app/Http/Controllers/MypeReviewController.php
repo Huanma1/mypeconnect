@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Mype;
-use App\Models\MypeReview;
-use Inertia\Inertia;
-
+use Illuminate\Http\Request;
 
 class MypeReviewController extends Controller
 {

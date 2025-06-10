@@ -1,19 +1,19 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\MypeAuthController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\MypeController;
 use App\Http\Controllers\MypeProductController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductCommentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\WelcomeController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\ProductCommentController;
-use Illuminate\Http\Request;
-use App\Http\Controllers\OrderController;
 
 // Página de inicio (pública)
 Route::get('/', [WelcomeController::class, 'showWelcome'])->name('home');
@@ -72,11 +72,13 @@ Route::get('/mypes/{id}', [MypeController::class, 'show'])->name('mypes.show');
 
 Route::post('/checkout/store-cart', function (Request $request) {
     session(['cart_items' => $request->items]);
+
     return redirect('/checkout');
 });
 
 Route::get('/checkout', function () {
     $cartItems = session('cart_items', []);
+
     return Inertia::render('CheckoutPage', [
         'cartItems' => $cartItems,
     ]);
@@ -85,7 +87,7 @@ Route::get('/checkout', function () {
 Route::post('/orders', [OrderController::class, 'store']);
 
 Route::get('/gracias-por-tu-compra', function () {
-    return Inertia::render('ThankYouPage'); 
+    return Inertia::render('ThankYouPage');
 })->name('orders.thankyou');
 
 // Rutas de usuarios (clientes) y autenticación general están en:
