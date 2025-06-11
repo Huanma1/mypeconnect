@@ -34,7 +34,7 @@ export default function Dashboard() {
                 })
                 .catch((err) => {
                     console.error(err);
-                    setError('Error al obtener productos con bajo stock.');
+                    setError('Error al obtener productos con bajo stock');
                     setLoading(false);
                 });
         }

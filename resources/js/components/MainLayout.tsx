@@ -15,15 +15,8 @@ interface Props {
 
 export default function MainLayout({ children, categories = [] }: Props) {
   const { auth, filters } = usePage<{
-    auth: { 
-      user: Mype | User | null 
-      type: 'mype' | 'user' | null
-    };
-    filters?: {
-      category?: string;
-      min_price?: string;
-      max_price?: string;
-    };
+    auth: { user: Mype | User | null; type: 'mype' | 'user' | null };
+    filters?: { category?: string; min_price?: string; max_price?: string };
   }>().props;
 
   const [showLogin, setShowLogin] = useState(false);
@@ -40,11 +33,8 @@ export default function MainLayout({ children, categories = [] }: Props) {
         category: cat,
         min_price: filters?.min_price ?? '',
         max_price: filters?.max_price ?? '',
-      }, 
-      {
-        preserveState: false,
-        preserveScroll: true,
-      }
+      },
+      { preserveState: false, preserveScroll: true }
     );
   };
 
@@ -60,8 +50,8 @@ export default function MainLayout({ children, categories = [] }: Props) {
 
   return (
     <Loading>
-      {showLogin && 
-      (loginType === null ? (
+      {showLogin &&
+        (loginType === null ? (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 w-96 relative shadow-xl">
               <button
@@ -70,7 +60,9 @@ export default function MainLayout({ children, categories = [] }: Props) {
               >
                 &times;
               </button>
-              <h2 className="text-2xl font-semibold mb-4">Selecciona el tipo de inicio de sesión</h2>
+              <h2 className="text-2xl font-semibold mb-4">
+                Selecciona el tipo de inicio de sesión
+              </h2>
               <div className="flex justify-center gap-6">
                 <button
                   onClick={() => setLoginType('user')}
@@ -101,7 +93,9 @@ export default function MainLayout({ children, categories = [] }: Props) {
               >
                 &times;
               </button>
-              <h2 className="text-2xl font-semibold mb-4">Selecciona el tipo de registro</h2>
+              <h2 className="text-2xl font-semibold mb-4">
+                Selecciona el tipo de registro
+              </h2>
               <div className="flex justify-center gap-6">
                 <button
                   onClick={() => setRegisterType('user')}
@@ -124,7 +118,7 @@ export default function MainLayout({ children, categories = [] }: Props) {
           <RegisterModal onClose={() => setShowRegister(false)} />
         ))}
 
-        {showCategoriesDrawer && (
+      {showCategoriesDrawer && (
         <CategoryDrawer
           isOpen={showCategoriesDrawer}
           onClose={() => setShowCategoriesDrawer(false)}
@@ -141,12 +135,11 @@ export default function MainLayout({ children, categories = [] }: Props) {
       <div style={styles.container}>
         <header style={styles.header}>
           <div style={styles.headerContent}>
-            {/* Lado izquierdo: logo + categorías */}
+            {/* Logo y categorías */}
             <div style={styles.leftSection}>
               <Link href={route('home')} style={{ display: 'inline-block' }}>
                 <img src="/logo completo.png" alt="Mype Connect" style={styles.logo} />
               </Link>
-            
               <button
                 onClick={() => setShowCategoriesDrawer(true)}
                 style={styles.outlinedButton}
@@ -168,15 +161,16 @@ export default function MainLayout({ children, categories = [] }: Props) {
                 </svg>
                 <span style={{ marginLeft: 6 }}>Categorías</span>
               </button>
-
-              <div>
-                <Link href={route('mypes.index')}className="bg-blue-600 text-white px-4 py-2 rounded">
-                  Ver todas las Mypes
-                </Link>
-              </div>
             </div>
 
-            {/* Lado derecho: navegación + carrito */}
+            {/* Botón centrado: Ver todas las Mypes */}
+            <div style={styles.centerSection}>
+              <Link href={route('mypes.index')} style={styles.outlinedButton}>
+                🏪 <span style={{ marginLeft: 6 }}>Ver todas las Mypes</span>
+              </Link>
+            </div>
+
+            {/* Navegación y carrito */}
             <div style={styles.rightSection}>
               <nav style={styles.nav}>
                 {auth.user ? (
@@ -199,11 +193,7 @@ export default function MainLayout({ children, categories = [] }: Props) {
                   </>
                 )}
               </nav>
-
-              <button
-                onClick={() => setShowCart(true)}
-                style={styles.outlinedButton}
-              >
+              <button onClick={() => setShowCart(true)} style={styles.outlinedButton}>
                 🛒 <span style={{ marginLeft: 6 }}>Ver Carrito</span>
               </button>
             </div>
@@ -217,16 +207,8 @@ export default function MainLayout({ children, categories = [] }: Props) {
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    minHeight: '100vh',
-    backgroundColor: '#f3f4f6',
-    color: '#111827',
-  },
-  header: {
-    padding: '1rem',
-    backgroundColor: '#111827',
-    color: '#fff',
-  },
+  container: { minHeight: '100vh', backgroundColor: '#f3f4f6', color: '#111827' },
+  header: { padding: '1rem', backgroundColor: '#111827', color: '#fff' },
   headerContent: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -234,52 +216,14 @@ const styles: { [key: string]: React.CSSProperties } = {
     flexWrap: 'wrap',
     gap: '1rem',
   },
-  leftSection: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-  },
-  rightSection: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-  },
-  logo: {
-    height: 40,
-    transform: 'scale(1.5)',
-  },
-  nav: {
-    display: 'flex',
-    gap: '1rem',
-    alignItems: 'center',
-  },
-  navText: {
-    fontWeight: 500,
-  },
-  link: {
-    color: '#fff',
-    textDecoration: 'underline',
-  },
-  linkButton: {
-    background: 'none',
-    border: 'none',
-    color: '#fff',
-    cursor: 'pointer',
-    textDecoration: 'underline',
-    fontSize: '1rem',
-  },
-  outlinedButton: {
-    display: 'flex',
-    alignItems: 'center',
-    border: '1px solid white',
-    borderRadius: '0.375rem',
-    padding: '0.35rem 0.75rem',
-    background: 'transparent',
-    color: 'white',
-    fontSize: '0.95rem',
-    cursor: 'pointer',
-  },
-  main: {
-    padding: '1.5rem',
-  },
+  leftSection: { display: 'flex', alignItems: 'center', gap: '1rem' },
+  centerSection: { flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' },
+  rightSection: { display: 'flex', alignItems: 'center', gap: '1rem' },
+  logo: { height: 40, transform: 'scale(1.5)' },
+  nav: { display: 'flex', gap: '1rem', alignItems: 'center' },
+  navText: { fontWeight: 500 },
+  link: { color: '#fff', textDecoration: 'underline' },
+  linkButton: { background: 'none', border: 'none', color: '#fff', cursor: 'pointer', textDecoration: 'underline', fontSize: '1rem' },
+  outlinedButton: { display: 'flex', alignItems: 'center', border: '1px solid white', borderRadius: '0.375rem', padding: '0.35rem 0.75rem', background: 'transparent', color: 'white', fontSize: '0.95rem', cursor: 'pointer' },
+  main: { padding: '1.5rem' },
 };
