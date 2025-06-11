@@ -1,11 +1,7 @@
 import React from 'react';
 import { usePage } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
-
-interface Mype {
-  id: number;
-  name: string;
-}
+import { Mype } from '@/types';
 
 interface Props {
   mypes: Mype[];
@@ -23,6 +19,7 @@ export default function MypesList({ mypes }: Props) {
             <li key={mype.id}>
               <Link href={route('mypes.show', mype.id)} className="text-blue-600 hover:underline">
                 {mype.name}
+                <p className="text-gray-700">{mype.mype_description}</p>
               </Link>
             </li>
           ))}

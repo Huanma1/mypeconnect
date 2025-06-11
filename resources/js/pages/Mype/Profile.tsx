@@ -1,5 +1,5 @@
 import React, { FormEvent } from 'react';
-import { usePage, useForm } from '@inertiajs/react';
+import { usePage, useForm, Link } from '@inertiajs/react';
 import Layout from '@/components/MainLayout';
 
 interface User { name: string }
@@ -33,9 +33,13 @@ export default function MypeProfile({ mype }: Props) {
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {mype.products.map(product => (
               <li key={product.id} className="bg-gray-50 p-4 rounded-lg hover:shadow-md transition">
+              <Link href={route('products.show', product.id)} className="block">
                 <p className="font-medium text-lg">{product.product_name}</p>
-                <p className="text-gray-600">Precio: <span className="font-semibold">${product.pivot.custom_price}</span></p>
-              </li>
+                <p className="text-gray-600">
+                  Precio: <span className="font-semibold">${product.pivot.custom_price}</span>
+                </p>
+              </Link>
+            </li>
             ))}
           </ul>
         </section>

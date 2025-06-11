@@ -10,7 +10,7 @@ import Cart from '@/components/Cart';
 
 interface Props {
   children: React.ReactNode;
-  categories?: string[];
+  categories: string[];
 }
 
 export default function MainLayout({ children, categories = [] }: Props) {
@@ -122,7 +122,7 @@ export default function MainLayout({ children, categories = [] }: Props) {
         <CategoryDrawer
           isOpen={showCategoriesDrawer}
           onClose={() => setShowCategoriesDrawer(false)}
-          categories={categories}
+          categories={categories ?? []}
           onSelectCategory={(cat) => {
             handleSelectCategory(cat);
             setShowCategoriesDrawer(false);
@@ -135,6 +135,7 @@ export default function MainLayout({ children, categories = [] }: Props) {
       <div style={styles.container}>
         <header style={styles.header}>
           <div style={styles.headerContent}>
+
             {/* Logo y categorías */}
             <div style={styles.leftSection}>
               <Link href={route('home')} style={{ display: 'inline-block' }}>
