@@ -1,11 +1,11 @@
+import AlertaStock from '@/components/AlertaStock';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
-import AlertaStock from '@/components/AlertaStock';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Product } from '@/types/index';
+import { Head, usePage } from '@inertiajs/react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -53,9 +53,7 @@ export default function Dashboard() {
                 {error && <div className="text-red-500">{error}</div>}
 
                 {/* Mostrar la alerta de productos con bajo stock */}
-                {productosBajoStock.length > 0 && (
-                    <AlertaStock productos={productosBajoStock} />
-                )}
+                {productosBajoStock.length > 0 && <AlertaStock productos={productosBajoStock} />}
 
                 {/* Grilla de componentes */}
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">

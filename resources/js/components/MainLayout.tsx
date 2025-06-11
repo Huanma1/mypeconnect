@@ -160,48 +160,52 @@ export default function MainLayout({ children, categories = [] }: Props) {
                             <nav style={styles.nav}>
                                 {auth.user ? (
                                     <>
-                                        
-                                        <span style={styles.navText}>
+                                        {auth.type === 'user' && (
+                                          <span style={styles.navText}>
+                                            <div className="relative">
+                                                <button
+                                                    onClick={() => setOpen(!open)}
+                                                    className="flex items-center rounded-full text-sm focus:outline-none"
+                                                >
+                                                    <span className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">
+                                                        {auth.user.name}
+                                                        <svg
+                                                            className="ml-2 h-4 w-4"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                            stroke="currentColor"
+                                                            strokeWidth={1.5}
+                                                        >
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                                        </svg>
+                                                    </span>
+                                                </button>
 
-                                          <div className="relative">
-                                            <button
-                                                onClick={() => setOpen(!open)}
-                                                className="flex items-center rounded-full text-sm focus:outline-none"
-                                            >
-                                                <span className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">
-                                                    {auth.user.name}
-                                                    <svg
-                                                        className="ml-2 h-4 w-4"
-                                                        fill="none"
-                                                        viewBox="0 0 24 24"
-                                                        stroke="currentColor"
-                                                        strokeWidth={1.5}
-                                                    >
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                                    </svg>
-                                                </span>
-                                            </button>
-
-                                            {open && (
-                                                <div className="absolute right-0 z-50 mt-2 w-48 rounded-md border border-gray-200 bg-white shadow-lg">
-                                                    <div className="px-4 py-2 text-xs text-gray-500">Administrar cuenta</div>
-                                                    <Dropdown.Link href={route('user.profile.edit')}>Perfil</Dropdown.Link>
-                                                    <hr className="my-1 border-gray-200" />
-                                                    <form method="POST" action={route('logout')}>
-                                                        <Dropdown.Link as="button" type="submit">
-                                                            Cerrar sesión
-                                                        </Dropdown.Link>
-                                                    </form>
-                                                </div>
-                                            )}
-                                          </div>
+                                                {open && (
+                                                    <div className="absolute right-0 z-50 mt-2 w-48 rounded-md border border-gray-200 bg-white shadow-lg">
+                                                        <div className="px-4 py-2 text-xs text-gray-500">Administrar cuenta</div>
+                                                        <Dropdown.Link href={route('user.profile.edit')}>Perfil</Dropdown.Link>
+                                                        <hr className="my-1 border-gray-200" />
+                                                        <Dropdown.Link
+                                                          as="button"
+                                                          type="button"
+                                                          onClick={() => {
+                                                              router.post(route('logout'));
+                                                          }}
+                                                      >
+                                                          Cerrar sesión
+                                                      </Dropdown.Link>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </span>
-                                        {auth.type === 'mype' && (
-                                          <Link href={route('dashboard')} style={styles.link}>
-                                            Dashboard
-                                        </Link>
                                         )}
-                        
+                                        
+                                        {auth.type === 'mype' && (
+                                            <Link href={route('dashboard')} style={styles.link}>
+                                                {auth.user.name} - Dashboard
+                                            </Link>
+                                        )}
                                     </>
                                 ) : (
                                     <>

@@ -1,11 +1,11 @@
 export default function AppLogo() {
     return (
         <>
-            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-md border-radius-md border-2 border-sidebar-primary p-1">
+            <div className="bg-sidebar-primary text-sidebar-primary-foreground border-radius-md border-sidebar-primary flex aspect-square size-8 items-center justify-center rounded-md border-2 p-1">
                 <img
                     src="/images/logoMype.png" // Ruta al archivo PNG
                     alt="Logo Mi Mype"
-                    className="w-20 h-20 object-contain"
+                    className="h-20 w-20 object-contain"
                 />
             </div>
             <div className="ml-1 grid flex-1 text-left text-sm">

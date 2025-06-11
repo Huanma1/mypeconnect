@@ -1,25 +1,20 @@
-import { Head, usePage } from '@inertiajs/react';
-import { Product, Paginated } from '@/types';
 import ProductList from '@/pages/ProductList';
-import MainLayout from '@/components/MainLayout';
+import { Paginated, Product } from '@/types';
+import { Head, usePage } from '@inertiajs/react';
 
 export default function Welcome() {
-    const { products, categories } = usePage<{ 
-        products: Paginated<Product>; 
-        categories: string[]; 
+    const { products, categories } = usePage<{
+        products: Paginated<Product>;
+        categories: string[];
     }>().props;
-    
 
     return (
         <>
             <Head title="Mype Connect" />
-            <div>
-                
-            </div>
+            <div></div>
             <div>
                 <ProductList products={products} filters={{}} categories={categories} />
             </div>
-                
         </>
     );
 }

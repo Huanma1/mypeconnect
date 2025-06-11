@@ -3,8 +3,8 @@ import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';  // Asegúrate de importar el Link de Inertia
-import { BookOpen, Folder, LayoutGrid , ArrowLeft } from 'lucide-react';
+import { Link } from '@inertiajs/react'; // Asegúrate de importar el Link de Inertia
+import { ArrowLeft, BookOpen, Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -24,17 +24,16 @@ const mainNavItems: NavItem[] = [
         icon: BookOpen,
     },
     {
-        title: 'Historial de Cambios', 
-        href: '/dashboard/inventory-history', 
-        icon: Folder, 
+        title: 'Historial de Cambios',
+        href: '/dashboard/inventory-history',
+        icon: Folder,
     },
-
 ];
 
 const footerNavItems: NavItem[] = [
     {
         title: 'Regresar a Inicio',
-        href: route('home'),  // Usa route() para las rutas de Laravel
+        href: route('home'), // Usa route() para las rutas de Laravel
         icon: ArrowLeft,
     },
 ];

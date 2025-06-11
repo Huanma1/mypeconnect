@@ -25,15 +25,14 @@ type ProfileForm = {
     phone_number?: string;
     mype_address?: string;
     mype_description?: string;
-
-}
+};
 
 export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
     const { auth } = usePage<SharedData>().props;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
-        name: auth.user.name ,
-        email: auth.user.email ,
+        name: auth.user.name,
+        email: auth.user.email,
         phone_number: auth.user.phone_number || '',
         mype_address: auth.user.mype_address || '',
         mype_description: auth.user.mype_description || '',
@@ -126,7 +125,6 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             />
                             <InputError className="mt-2" message={errors.mype_description} />
                         </div>
-
 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
                             <div>
