@@ -17,7 +17,7 @@ class MypeFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'password' => bcrypt('password'),
             'phone_number' => $this->faker->phoneNumber(),
-            'mype_rate' => $this->faker->randomFloat(1, 1, 5), 
+            'mype_rate' => $this->faker->randomFloat(1, 1, 5),
             'mype_address' => $this->faker->address(),
             'mype_description' => $this->faker->paragraph(),
             'remember_token' => Str::random(10),

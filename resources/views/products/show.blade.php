@@ -30,7 +30,14 @@
                 <h3 class="text-2xl font-bold mb-4">Mypes que venden este producto</h3>
 
                 @if($product->mypes->isNotEmpty())
-                    @foreach($product->mypes as $mype)
+                    @php
+                        // Ordenar las mypes por precio de mayor a menor
+                        $sortedMypes = $product->mypes->sortByDesc(function ($mype) {
+                            return  ?? 0;
+                        });
+                    @endphp
+
+                    @foreach($sortedMypes as $mype)
                         <div class="border-b pb-4 mb-4">
                             <p class="text-lg font-semibold">Tienda: {{ $mype->name }}</p>
                             <p class="text-gray-600">Precio: ${{ $mype->pivot->custom_price ?? 'N/A' }}</p>

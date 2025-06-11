@@ -8,24 +8,25 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class MypeAuthController extends Controller
 {
     /**
      * Muestra el formulario de registro.
      */
-    public function showRegisterForm(): View
+    public function showResgiterForm(): Response
     {
-        return view('mypes.register');
+        return Inertia::render('Register');
     }
 
     /**
      * Muestra el formulario de inicio de sesión.
      */
-    public function showLoginForm(): View
+    public function showLoginForm(): Response
     {
-        return view('mypes.login');
+        return Inertia::render('Login');
     }
 
     /**

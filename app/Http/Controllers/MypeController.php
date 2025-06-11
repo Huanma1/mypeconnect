@@ -7,18 +7,17 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\View\View;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Models\InventoryHistory;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class MypeController extends Controller
 {
     /**
      * Muestra el formulario de registro para un MYPE.
      */
-    public function create(): View
+    public function create(): Response
     {
-        return view('mypes.register');
+        return Inertia::render('Register');
     }
 
     /**
@@ -76,5 +75,54 @@ class MypeController extends Controller
             ->paginate(10); // Paginación
 
         return view('products.inventory-history', compact('inventoryHistories'));
+    }
+
+    public function storeReview(Request $request, Mype $mype)
+    {
+        $user = auth()->user();
+
+        // Validar si ya existe review del usuario para esta mype
+        $exists = $mype->reviews()->where('user_id', $user->id)->exists();
+
+        if ($exists) {
+            return back()->withErrors(['comment' => 'Ya has dejado una calificación para esta mype.']);
+        }
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|max:1000',
+        ]);
+
+        $mype->reviews()->create([
+            'user_id' => $user->id,
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+        ]);
+
+        return redirect()->back()->with('success', 'Comentario agregado.');
+    }
+
+    public function show($id)
+    {
+        $mype = Mype::with(['products', 'reviews.user'])->findOrFail($id);
+
+        return Inertia::render('Mype/Profile', [
+            'mype' => $mype,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
+    }
+
+    public function index()
+    {
+        $mypes = Mype::select('id', 'name')->get();
+
+        return Inertia::render('MypesList', [
+            'mypes' => $mypes,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 }

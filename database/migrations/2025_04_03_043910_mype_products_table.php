@@ -14,12 +14,22 @@ return new class extends Migration
         Schema::create('mype_products', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+
+            // Relaciones
             $table->foreignId('mype_id')->constrained()->onDelete('restrict');
             $table->foreignId('product_id')->constrained()->onDelete('restrict');
-            $table->integer('custom_price')->nullable(); // Este campo es para el precio personalizado de cada mype
+
+            // Información del producto
+            $table->integer('custom_price')->nullable();
             $table->integer('stock')->default(0);
-            $table->decimal('product_rate')->default(0);
             $table->integer('min_stock')->default(5)->after('stock');
+
+            // Calificaciones
+            $table->decimal('product_rate')->default(0);
+            $table->integer('ratings_count')->default(0);
+
+            // Información de descuento
+            $table->decimal('discount', 5, 2)->nullable()->after('custom_price'); // porcentaje
         });
 
     }
