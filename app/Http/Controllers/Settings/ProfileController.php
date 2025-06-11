@@ -62,7 +62,7 @@ class ProfileController extends Controller
         // Guardar los cambios en el modelo usuario
         $user->save();
 
-        return to_route('profile.edit');
+        return to_route('mype.profile.edit');
     }
 
     /**

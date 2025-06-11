@@ -190,7 +190,7 @@ export default function MainLayout({ children, categories = [] }: Props) {
                                                           as="button"
                                                           type="button"
                                                           onClick={() => {
-                                                              router.post(route('logout'));
+                                                              router.post(route('logout.user'));
                                                           }}
                                                       >
                                                           Cerrar sesión

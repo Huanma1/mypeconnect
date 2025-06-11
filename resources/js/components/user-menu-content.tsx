@@ -22,7 +22,7 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href={route('profile.edit')} as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route('mype.profile.edit')} as="button" prefetch onClick={cleanup}>
                         <Settings className="mr-2" />
                         Settings
                     </Link>
@@ -33,7 +33,7 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                 <Link
                     className="block w-full"
                     method="post" // Envía una solicitud POST
-                    href={route('logout')} // Ruta de cierre de sesión
+                    href={route('logout.mype')} // Ruta de cierre de sesión
                     as="button"
                     onClick={cleanup} // Limpia la navegación móvil si es necesario
                 >
