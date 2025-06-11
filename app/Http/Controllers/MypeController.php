@@ -116,7 +116,7 @@ class MypeController extends Controller
 
     public function index()
     {
-        $mypes = Mype::select('id', 'name','mype_description')->get();
+        $mypes = Mype::select('id', 'name', 'mype_description')->get();
 
         return Inertia::render('MypesList', [
             'mypes' => $mypes,
