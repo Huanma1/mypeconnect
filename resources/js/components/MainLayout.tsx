@@ -210,10 +210,10 @@ export default function MainLayout({ children, categories = [] }: Props) {
                                 ) : (
                                     <>
                                         <button onClick={handleLoginClick} style={styles.linkButton}>
-                                            Log in
+                                            Iniciar sesión
                                         </button>
                                         <button onClick={handleRegisterClick} style={styles.linkButton}>
-                                            Register
+                                            Registrate
                                         </button>
                                     </>
                                 )}
